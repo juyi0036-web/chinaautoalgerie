@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Editors
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# WorkBuddy
+.workbuddy/
+.tmp/
+
+# Build artifacts
+outputs/
+*.zip
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.env
+venv/

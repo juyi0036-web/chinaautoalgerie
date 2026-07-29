@@ -245,7 +245,7 @@ export default function Home() {
             <div className="car-card fade-in">
               <div className="car-card-image">
                 <span className="car-badge">En stock</span>
-                <img src="/images/cars-algeria-scene.png" alt="Volkswagen Lavida 2025" />
+                <img src="/images/volkswagen-lavida-2025.png" alt="Volkswagen Lavida 2025" />
               </div>
               <div className="car-card-body">
                 <span className="brand">Volkswagen</span>
@@ -265,7 +265,7 @@ export default function Home() {
             <div className="car-card fade-in">
               <div className="car-card-image">
                 <span className="car-badge">SUV</span>
-                <img src="/images/cars-algeria-scene.png" alt="Geely Livan X3 Pro 2026" />
+                <img src="/images/geely-livan-x3-pro.png" alt="Geely Livan X3 Pro 2026" />
               </div>
               <div className="car-card-body">
                 <span className="brand">Geely</span>

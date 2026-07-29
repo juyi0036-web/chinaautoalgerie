@@ -2,8 +2,9 @@
 
 > **Votre voiture chinoise en Algérie** — Le portail professionnel des voitures chinoises vers l'Algérie.
 
-[![Netlify Status](https://img.shields.io/badge/live-CloudStudio-brightgreen)](https://a0a3a8dbae5240f48d482a37c5df31a0.app.codebuddy.work)
+[![Pages](https://img.shields.io/badge/live-GitHub%20Pages-brightgreen)](https://juyi0036-web.github.io/chinaautoalgerie/)
 [![Language](https://img.shields.io/badge/lang-français-blue)]()
+[![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red)]()
 
 ## À propos
 

@@ -298,9 +298,9 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Blanc</div>
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
-                <div className="car-price">1 881 000 DA</div>
-                <div className="car-price-eur">≈ 12 420 €</div>
-                <div className="car-price-note">Prix FOB Shanghai, hors transport maritime</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>1 851 000 DA</div>
+                <div className="car-price-eur">≈ 12 220 €</div>
+                <div className="car-price-note">Prix de base du véhicule, hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
             </div>
@@ -318,9 +318,9 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>4 véhicules/container</div>
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
-                <div className="car-price">1 187 000 DA</div>
-                <div className="car-price-eur">≈ 7 840 €</div>
-                <div className="car-price-note">Prix FOB Shanghai, minimum 4 véhicules par conteneur</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>1 157 000 DA</div>
+                <div className="car-price-eur">≈ 7 640 €</div>
+                <div className="car-price-note">Prix de base du véhicule, minimum 4 véhicules par conteneur</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
             </div>

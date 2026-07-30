@@ -265,7 +265,7 @@ export default function Home() {
             <div className="car-card fade-in">
               <div className="car-card-image">
                 <span className="car-badge">SUV</span>
-                <img src="/images/geely-livan-x3-pro.png?v=4" alt="Geely Livan X3 Pro 2026" />
+                <img src="/images/geely-livan-x3-pro.png?v=5" alt="Geely Livan X3 Pro 2026" />
               </div>
               <div className="car-card-body">
                 <span className="brand">Geely</span>

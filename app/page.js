@@ -6,12 +6,13 @@ const RATE_CNY_DZD = 19.69;
 const RATE_CNY_EUR = 0.13;
 
 // ---- Car cost models ----
+// baseVehicleDZD = 车辆裸价（不含 FOB），fobSurcharge = 从上海工厂到 FOB 上海港的费用
 const carModels = {
   lavida: {
     name: 'Volkswagen Lavida 2025',
-    baseFobDZD: 1881000,
+    baseVehicleDZD: 1851000,
     fobSurcharge: 30000,
-    fobSurchargeLabel: 'Frais FOB — Documentation export, manutention portuaire Shanghai',
+    fobSurchargeLabel: 'FOB Shanghai — Transport usine → port, documentation export, manutention',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
     seaPortFees: 30000,
@@ -23,9 +24,9 @@ const carModels = {
   },
   livan: {
     name: 'Geely Livan X3 Pro 2026',
-    baseFobDZD: 1187000,
+    baseVehicleDZD: 1157000,
     fobSurcharge: 30000,
-    fobSurchargeLabel: 'Frais FOB — Documentation export, manutention portuaire Shanghai',
+    fobSurchargeLabel: 'FOB Shanghai — Transport usine → port, documentation export, manutention',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
     seaPortFees: 30000,
@@ -46,10 +47,10 @@ function formatEUR(amount) {
 
 function calcSimTotal(model, toggles) {
   if (!model) return null;
-  const { baseFobDZD, fobSurcharge, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate, dossierFees } = model;
+  const { baseVehicleDZD, fobSurcharge, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate, dossierFees } = model;
 
-  let subtotal = baseFobDZD;
-  const lines = [{ label: 'Prix de base (FOB Shanghai)', value: baseFobDZD, always: true }];
+  let subtotal = baseVehicleDZD;
+  const lines = [{ label: 'Prix de base du véhicule (hors FOB)', value: baseVehicleDZD, always: true }];
 
   if (toggles.fob) {
     subtotal += fobSurcharge;
@@ -64,7 +65,6 @@ function calcSimTotal(model, toggles) {
   }
 
   if (toggles.tariff) {
-    // CIF is the subtotal after FOB + sea
     const cif = subtotal;
     const customs = Math.round(cif * customsRate);
     const tva = Math.round((cif + customs) * tvaRate);
@@ -368,16 +368,16 @@ export default function Home() {
               <div className="sim-result">
                 {/* Base price — always visible */}
                 <div className="sim-base-price">
-                  <span className="sim-base-label">Prix de base (FOB Shanghai)</span>
-                  <span className="sim-base-value">{formatDA(model.baseFobDZD)}</span>
-                  <span className="sim-base-eur">{formatEUR(model.baseFobDZD)}</span>
+                  <span className="sim-base-label">Prix de base du véhicule (hors FOB)</span>
+                  <span className="sim-base-value">{formatDA(model.baseVehicleDZD)}</span>
+                  <span className="sim-base-eur">{formatEUR(model.baseVehicleDZD)}</span>
                 </div>
 
                 {/* Toggle layers */}
                 <div className="sim-layers">
                   <p className="sim-layers-title">Ajoutez les coûts supplémentaires :</p>
 
-                  {/* Layer 1: FOB surcharge */}
+                  {/* Layer 1: FOB */}
                   <label className={`sim-checkbox ${simToggles.fob ? 'checked' : ''}`}>
                     <input
                       type="checkbox"
@@ -386,8 +386,8 @@ export default function Home() {
                     />
                     <span className="sim-checkbox-indicator"></span>
                     <span className="sim-checkbox-body">
-                      <span className="sim-checkbox-title">+ Frais FOB & manutention portuaire</span>
-                      <span className="sim-checkbox-desc">Documentation export, manutention au port de Shanghai, frais de dossier export</span>
+                      <span className="sim-checkbox-title">+ FOB Shanghai</span>
+                      <span className="sim-checkbox-desc">Transport usine → port de Shanghai, documentation export, manutention portuaire</span>
                     </span>
                     <span className="sim-checkbox-price">+ {formatDA(model.fobSurcharge)}</span>
                   </label>
@@ -405,7 +405,9 @@ export default function Home() {
                       <span className="sim-checkbox-desc">Fret Shanghai → Alger, assurance maritime, déchargement portuaire</span>
                     </span>
                     <span className="sim-checkbox-price">
-                      + {formatDA(model.seaFreight + Math.round(model.baseFobDZD * model.seaInsuranceRate) + model.seaPortFees)}
+                      + {formatDA(model.seaFreight + Math.round(
+                        (model.baseVehicleDZD + (simToggles.fob ? model.fobSurcharge : 0)) * model.seaInsuranceRate
+                      ) + model.seaPortFees)}
                     </span>
                   </label>
 
@@ -423,8 +425,11 @@ export default function Home() {
                     </span>
                     <span className="sim-checkbox-price">
                       + {(() => {
-                        // Calc tariff for preview (assumes sea freight is also active)
-                        const cifForPreview = model.baseFobDZD + (simToggles.fob ? model.fobSurcharge : 0) + (simToggles.sea ? (model.seaFreight + Math.round(model.baseFobDZD * model.seaInsuranceRate) + model.seaPortFees) : 0);
+                        const subtotalForPreview = model.baseVehicleDZD + (simToggles.fob ? model.fobSurcharge : 0);
+                        const seaTotalForPreview = simToggles.sea
+                          ? model.seaFreight + Math.round(subtotalForPreview * model.seaInsuranceRate) + model.seaPortFees
+                          : 0;
+                        const cifForPreview = subtotalForPreview + seaTotalForPreview;
                         const customsForPreview = Math.round(cifForPreview * model.customsRate);
                         const tvaForPreview = Math.round((cifForPreview + customsForPreview) * model.tvaRate);
                         return formatDA(customsForPreview + tvaForPreview + model.dossierFees);

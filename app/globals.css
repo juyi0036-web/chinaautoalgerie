@@ -324,6 +324,28 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .sim-checkbox.checked .sim-checkbox-price { background: var(--primary); color: white; border-color: var(--primary); }
 
+/* Layer detail expansion */
+.sim-layer-detail {
+    margin: -8px 0 16px 56px;
+    padding: 14px 18px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    animation: fadeSlide 0.25s ease;
+}
+.sim-layer-detail-line {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; font-size: 0.85rem; color: var(--gray-600);
+    border-bottom: 1px dashed var(--gray-200);
+}
+.sim-layer-detail-line:last-child { border-bottom: none; }
+.sim-layer-detail-line span:last-child { font-weight: 600; white-space: nowrap; margin-left: 16px; }
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* Breakdown */
 .sim-breakdown { margin-bottom: 24px; }
 .sim-breakdown h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-800); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid var(--primary-light); }

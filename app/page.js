@@ -6,35 +6,54 @@ const RATE_CNY_DZD = 19.69;
 const RATE_CNY_EUR = 0.13;
 
 // ---- Car cost models ----
-// baseVehicleDZD = 车辆裸价（不含 FOB），fobSurcharge = 从上海工厂到 FOB 上海港的费用
+// baseVehicleDZD = 车辆裸价（不含 FOB）
+// fobItems = FOB 上海港之前的明细费用（RMB → DZD）
+// fobServiceRate = 服务费比例（按裸车价 + FOB 费用合计计算）
 const carModels = {
   lavida: {
     name: 'Volkswagen Lavida 2025',
-    baseVehicleDZD: 1851000,
-    fobSurcharge: 30000,
-    fobSurchargeLabel: 'FOB Shanghai — Transport usine → port, documentation export, manutention',
+    baseVehicleDZD: 1575200, // 80 000 RMB × 19.69
+    baseVehicleRMB: 80000,
+    fobItems: [
+      { label: 'Inspection du véhicule (contrôle qualité)', rmb: 2000, dzd: 39380 },
+      { label: 'Transport intérieur jusqu\'au port de Shanghai', rmb: 1500, dzd: 29535 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59070 },
+      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11814 },
+      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49225 },
+      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11814 },
+      { label: 'Frais bancaires (virement T/T)', rmb: 300, dzd: 5907 },
+      { label: 'Divers (imprévus)', rmb: 500, dzd: 9845 },
+    ],
+    fobServiceRate: 0.05,
+    fobServiceLabel: 'Service China Auto Algérie (5%)',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
     seaPortFees: 30000,
-    seaLabel: 'Transport maritime Shanghai → Alger — Fret, assurance, déchargement',
     customsRate: 0.30,
     tvaRate: 0.19,
-    dossierFees: 25000,
-    tariffLabel: 'Droits de douane (30%) + TVA (19%) + Frais de dossier — Algérie',
   },
   livan: {
     name: 'Geely Livan X3 Pro 2026',
-    baseVehicleDZD: 1157000,
-    fobSurcharge: 30000,
-    fobSurchargeLabel: 'FOB Shanghai — Transport usine → port, documentation export, manutention',
+    // Données estimées en attendant le devis détaillé
+    baseVehicleDZD: 994000,
+    baseVehicleRMB: 50483,
+    fobItems: [
+      { label: 'Inspection du véhicule (contrôle qualité)', rmb: 1261, dzd: 24850 },
+      { label: 'Transport intérieur jusqu\'au port de Shanghai', rmb: 946, dzd: 18636 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 1892, dzd: 37273 },
+      { label: 'Déclaration en douane (exportation)', rmb: 378, dzd: 7447 },
+      { label: 'Frais portuaires (terminal & manutention)', rmb: 1577, dzd: 31049 },
+      { label: 'Documents export (facture, packing list, BL)', rmb: 378, dzd: 7447 },
+      { label: 'Frais bancaires (virement T/T)', rmb: 189, dzd: 3721 },
+      { label: 'Divers (imprévus)', rmb: 315, dzd: 6203 },
+    ],
+    fobServiceRate: 0.05,
+    fobServiceLabel: 'Service China Auto Algérie (5%)',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
     seaPortFees: 30000,
-    seaLabel: 'Transport maritime Shanghai → Alger — Fret, assurance, déchargement',
     customsRate: 0.30,
     tvaRate: 0.19,
-    dossierFees: 25000,
-    tariffLabel: 'Droits de douane (30%) + TVA (19%) + Frais de dossier — Algérie',
   },
 };
 
@@ -47,33 +66,48 @@ function formatEUR(amount) {
 
 function calcSimTotal(model, toggles) {
   if (!model) return null;
-  const { baseVehicleDZD, fobSurcharge, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate, dossierFees } = model;
+  const { baseVehicleDZD, fobItems, fobServiceRate, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate } = model;
 
   let subtotal = baseVehicleDZD;
-  const lines = [{ label: 'Prix de base du véhicule (hors FOB)', value: baseVehicleDZD, always: true }];
+  const lines = [{ label: 'Prix d\'achat du véhicule (hors FOB)', value: baseVehicleDZD, always: true }];
+  const fobLines = [];
+  const seaLines = [];
+  const tariffLines = [];
 
   if (toggles.fob) {
-    subtotal += fobSurcharge;
-    lines.push({ label: model.fobSurchargeLabel, value: fobSurcharge, toggle: 'fob' });
+    const fobTotal = fobItems.reduce((sum, item) => sum + item.dzd, 0);
+    const serviceFee = Math.round((baseVehicleDZD + fobTotal) * fobServiceRate);
+    subtotal += fobTotal + serviceFee;
+    lines.push({ label: 'Coût FOB Shanghai', value: fobTotal + serviceFee, toggle: 'fob' });
+    fobLines.push(...fobItems.map(item => ({ ...item, type: 'fob' })));
+    fobLines.push({ label: model.fobServiceLabel, dzd: serviceFee, type: 'fob' });
   }
 
   if (toggles.sea) {
     const assurance = Math.round(subtotal * seaInsuranceRate);
     const seaTotal = seaFreight + assurance + seaPortFees;
     subtotal += seaTotal;
-    lines.push({ label: model.seaLabel, value: seaTotal, toggle: 'sea' });
+    lines.push({ label: 'Fret maritime, assurance & port Algérie', value: seaTotal, toggle: 'sea' });
+    seaLines.push(
+      { label: 'Fret maritime Shanghai → Alger', dzd: seaFreight, type: 'sea' },
+      { label: 'Assurance maritime (0,8%)', dzd: assurance, type: 'sea' },
+      { label: 'Frais portuaires & déchargement Alger', dzd: seaPortFees, type: 'sea' }
+    );
   }
 
   if (toggles.tariff) {
     const cif = subtotal;
     const customs = Math.round(cif * customsRate);
     const tva = Math.round((cif + customs) * tvaRate);
-    const tariffTotal = customs + tva + dossierFees;
-    subtotal += tariffTotal;
-    lines.push({ label: model.tariffLabel, value: tariffTotal, toggle: 'tariff' });
+    subtotal += customs + tva;
+    lines.push({ label: 'Droits de douane & TVA', value: customs + tva, toggle: 'tariff' });
+    tariffLines.push(
+      { label: 'Droits de douane (30% de la valeur CIF)', dzd: customs, type: 'tariff' },
+      { label: 'TVA Algérie (19%)', dzd: tva, type: 'tariff' }
+    );
   }
 
-  return { lines, total: subtotal };
+  return { lines, total: subtotal, fobLines, seaLines, tariffLines };
 }
 
 export default function Home() {
@@ -298,9 +332,9 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Blanc</div>
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
-                <div className="car-price"><span className="car-price-from">À partir de</span>1 851 000 DA</div>
-                <div className="car-price-eur">≈ 12 220 €</div>
-                <div className="car-price-note">Prix de base du véhicule, hors FOB et transport maritime</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>1 575 200 DA</div>
+                <div className="car-price-eur">≈ 80 000 RMB · 10 400 €</div>
+                <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
             </div>
@@ -318,9 +352,9 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>4 véhicules/container</div>
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
-                <div className="car-price"><span className="car-price-from">À partir de</span>1 157 000 DA</div>
-                <div className="car-price-eur">≈ 7 640 €</div>
-                <div className="car-price-note">Prix de base du véhicule, minimum 4 véhicules par conteneur</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>994 000 DA</div>
+                <div className="car-price-eur">≈ 50 483 RMB · 6 565 €</div>
+                <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
             </div>
@@ -368,9 +402,9 @@ export default function Home() {
               <div className="sim-result">
                 {/* Base price — always visible */}
                 <div className="sim-base-price">
-                  <span className="sim-base-label">Prix de base du véhicule (hors FOB)</span>
+                  <span className="sim-base-label">Prix d&apos;achat du véhicule (hors FOB)</span>
                   <span className="sim-base-value">{formatDA(model.baseVehicleDZD)}</span>
-                  <span className="sim-base-eur">{formatEUR(model.baseVehicleDZD)}</span>
+                  <span className="sim-base-eur">≈ {model.baseVehicleRMB.toLocaleString('fr-FR')} RMB · {formatEUR(model.baseVehicleDZD)}</span>
                 </div>
 
                 {/* Toggle layers */}
@@ -387,10 +421,20 @@ export default function Home() {
                     <span className="sim-checkbox-indicator"></span>
                     <span className="sim-checkbox-body">
                       <span className="sim-checkbox-title">+ FOB Shanghai</span>
-                      <span className="sim-checkbox-desc">Transport usine → port de Shanghai, documentation export, manutention portuaire</span>
+                      <span className="sim-checkbox-desc">Inspection, transport intérieur, documents export, frais portuaires et service 5%</span>
                     </span>
-                    <span className="sim-checkbox-price">+ {formatDA(model.fobSurcharge)}</span>
+                    <span className="sim-checkbox-price">+ {formatDA(result.lines.find(l => l.toggle === 'fob')?.value || 0)}</span>
                   </label>
+                  {simToggles.fob && result.fobLines.length > 0 && (
+                    <div className="sim-layer-detail">
+                      {result.fobLines.map((item, i) => (
+                        <div key={i} className="sim-layer-detail-line">
+                          <span>{item.label}</span>
+                          <span>{formatDA(item.dzd)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Layer 2: Sea freight */}
                   <label className={`sim-checkbox ${simToggles.sea ? 'checked' : ''}`}>
@@ -401,15 +445,21 @@ export default function Home() {
                     />
                     <span className="sim-checkbox-indicator"></span>
                     <span className="sim-checkbox-body">
-                      <span className="sim-checkbox-title">+ Transport maritime & assurance</span>
-                      <span className="sim-checkbox-desc">Fret Shanghai → Alger, assurance maritime, déchargement portuaire</span>
+                      <span className="sim-checkbox-title">+ Fret maritime, assurance & port Algérie</span>
+                      <span className="sim-checkbox-desc">Transport Shanghai → Alger, assurance maritime, frais de déchargement</span>
                     </span>
-                    <span className="sim-checkbox-price">
-                      + {formatDA(model.seaFreight + Math.round(
-                        (model.baseVehicleDZD + (simToggles.fob ? model.fobSurcharge : 0)) * model.seaInsuranceRate
-                      ) + model.seaPortFees)}
-                    </span>
+                    <span className="sim-checkbox-price">+ {formatDA(result.lines.find(l => l.toggle === 'sea')?.value || 0)}</span>
                   </label>
+                  {simToggles.sea && result.seaLines.length > 0 && (
+                    <div className="sim-layer-detail">
+                      {result.seaLines.map((item, i) => (
+                        <div key={i} className="sim-layer-detail-line">
+                          <span>{item.label}</span>
+                          <span>{formatDA(item.dzd)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Layer 3: Local tariffs */}
                   <label className={`sim-checkbox ${simToggles.tariff ? 'checked' : ''}`}>
@@ -420,22 +470,21 @@ export default function Home() {
                     />
                     <span className="sim-checkbox-indicator"></span>
                     <span className="sim-checkbox-body">
-                      <span className="sim-checkbox-title">+ Droits de douane & TVA Algérie</span>
-                      <span className="sim-checkbox-desc">Droits de douane (30% CIF), TVA (19%), frais de dédouanement</span>
+                      <span className="sim-checkbox-title">+ Droits de douane & TVA (importation Algérie)</span>
+                      <span className="sim-checkbox-desc">Droits de douane 30% sur CIF + TVA 19% sur (CIF + douane)</span>
                     </span>
-                    <span className="sim-checkbox-price">
-                      + {(() => {
-                        const subtotalForPreview = model.baseVehicleDZD + (simToggles.fob ? model.fobSurcharge : 0);
-                        const seaTotalForPreview = simToggles.sea
-                          ? model.seaFreight + Math.round(subtotalForPreview * model.seaInsuranceRate) + model.seaPortFees
-                          : 0;
-                        const cifForPreview = subtotalForPreview + seaTotalForPreview;
-                        const customsForPreview = Math.round(cifForPreview * model.customsRate);
-                        const tvaForPreview = Math.round((cifForPreview + customsForPreview) * model.tvaRate);
-                        return formatDA(customsForPreview + tvaForPreview + model.dossierFees);
-                      })()}
-                    </span>
+                    <span className="sim-checkbox-price">+ {formatDA(result.lines.find(l => l.toggle === 'tariff')?.value || 0)}</span>
                   </label>
+                  {simToggles.tariff && result.tariffLines.length > 0 && (
+                    <div className="sim-layer-detail">
+                      {result.tariffLines.map((item, i) => (
+                        <div key={i} className="sim-layer-detail-line">
+                          <span>{item.label}</span>
+                          <span>{formatDA(item.dzd)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Result breakdown */}

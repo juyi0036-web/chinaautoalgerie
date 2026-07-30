@@ -249,7 +249,7 @@ img { max-width: 100%; height: auto; display: block; }
     border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
     padding: 40px; box-shadow: var(--shadow);
 }
-.sim-selector { margin-bottom: 32px; }
+.sim-selector { margin-bottom: 28px; }
 .sim-selector label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--gray-700); font-size: 0.95rem; }
 .sim-selector select {
     width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200);
@@ -257,12 +257,79 @@ img { max-width: 100%; height: auto; display: block; }
     color: var(--gray-800); background: var(--gray-50); cursor: pointer; transition: border-color 0.2s;
 }
 .sim-selector select:focus { outline: none; border-color: var(--primary); }
-.sim-breakdown { margin-bottom: 32px; }
-.sim-breakdown h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-800); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--primary-light); }
+
+/* Base price display */
+.sim-base-price {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px;
+    background: var(--primary-light); border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 24px;
+}
+.sim-base-label { font-size: 0.9rem; font-weight: 600; color: var(--primary); margin-right: auto; }
+.sim-base-value { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+.sim-base-eur { font-size: 0.95rem; font-weight: 600; color: var(--gray-600); }
+
+/* Toggle layers */
+.sim-layers {
+    display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px;
+}
+.sim-layers-title {
+    font-size: 0.9rem; font-weight: 700; color: var(--gray-700);
+    margin-bottom: 4px; padding-bottom: 8px; border-bottom: 2px solid var(--primary-light);
+}
+
+/* Checkbox row */
+.sim-checkbox {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px; border: 2px solid var(--gray-200);
+    border-radius: var(--radius); cursor: pointer;
+    transition: all 0.25s ease; position: relative; user-select: none;
+}
+.sim-checkbox:hover { border-color: var(--primary); background: var(--primary-light); }
+.sim-checkbox.checked {
+    border-color: var(--primary); background: var(--primary-light);
+    box-shadow: 0 0 0 1px var(--primary);
+}
+.sim-checkbox input[type="checkbox"] {
+    position: absolute; opacity: 0; width: 0; height: 0;
+}
+
+/* Custom checkbox indicator */
+.sim-checkbox-indicator {
+    width: 24px; height: 24px; min-width: 24px;
+    border: 2px solid var(--gray-300); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s ease; background: var(--white);
+}
+.sim-checkbox.checked .sim-checkbox-indicator {
+    background: var(--primary); border-color: var(--primary);
+}
+.sim-checkbox.checked .sim-checkbox-indicator::after {
+    content: ''; display: block; width: 6px; height: 11px;
+    border: solid white; border-width: 0 2px 2px 0;
+    transform: rotate(45deg); margin-top: -2px;
+}
+
+/* Checkbox body */
+.sim-checkbox-body { flex: 1; min-width: 0; }
+.sim-checkbox-title { display: block; font-size: 0.95rem; font-weight: 700; color: var(--gray-800); margin-bottom: 2px; }
+.sim-checkbox-desc { display: block; font-size: 0.8rem; color: var(--gray-600); line-height: 1.4; }
+
+/* Checkbox price badge */
+.sim-checkbox-price {
+    font-size: 0.95rem; font-weight: 700; color: var(--primary);
+    white-space: nowrap; padding: 6px 12px; background: var(--white);
+    border-radius: var(--radius-sm); border: 1px solid var(--primary-light);
+    transition: all 0.25s ease;
+}
+.sim-checkbox.checked .sim-checkbox-price { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* Breakdown */
+.sim-breakdown { margin-bottom: 24px; }
+.sim-breakdown h4 { font-size: 1.05rem; font-weight: 700; color: var(--gray-800); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid var(--primary-light); }
 .sim-line { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font-size: 0.95rem; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); }
 .sim-line span:last-child { font-weight: 600; white-space: nowrap; margin-left: 16px; }
-.sim-subtotal { color: var(--primary); font-weight: 700; padding: 14px 0; border-top: 2px solid var(--gray-200); border-bottom: 2px solid var(--gray-200); font-size: 1rem; margin-top: 4px; }
-.sim-total { color: var(--primary); font-size: 1.3rem; font-weight: 800; padding: 18px 0; border-top: 3px solid var(--primary); margin-top: 4px; }
+.sim-line-base { color: var(--gray-600); font-size: 0.9rem; }
+.sim-total { color: var(--primary); font-size: 1.25rem; font-weight: 800; padding: 16px 0; border-top: 3px solid var(--primary); margin-top: 4px; }
 .sim-chart { display: flex; gap: 2px; margin-bottom: 24px; border-radius: var(--radius-sm); overflow: hidden; height: 28px; }
 .sim-chart-bar { height: 100%; transition: width 0.5s ease; }
 .sim-note { background: #FFF8E1; border-left: 4px solid #F9A825; padding: 16px 20px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }

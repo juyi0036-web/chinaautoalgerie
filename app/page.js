@@ -4,12 +4,38 @@ import { useState, useEffect, useRef } from 'react';
 
 const RATE_CNY_DZD = 19.69;
 const RATE_CNY_EUR = 0.13;
-const simFret = 185000;
-const simAssuranceRate = 0.008;
-const simPortFees = 30000;
-const simDouaneRate = 0.30;
-const simTvaRate = 0.19;
-const simDossierFees = 25000;
+
+// ---- Car cost models ----
+const carModels = {
+  lavida: {
+    name: 'Volkswagen Lavida 2025',
+    baseFobDZD: 1881000,
+    fobSurcharge: 30000,
+    fobSurchargeLabel: 'Frais FOB — Documentation export, manutention portuaire Shanghai',
+    seaFreight: 185000,
+    seaInsuranceRate: 0.008,
+    seaPortFees: 30000,
+    seaLabel: 'Transport maritime Shanghai → Alger — Fret, assurance, déchargement',
+    customsRate: 0.30,
+    tvaRate: 0.19,
+    dossierFees: 25000,
+    tariffLabel: 'Droits de douane (30%) + TVA (19%) + Frais de dossier — Algérie',
+  },
+  livan: {
+    name: 'Geely Livan X3 Pro 2026',
+    baseFobDZD: 1187000,
+    fobSurcharge: 30000,
+    fobSurchargeLabel: 'Frais FOB — Documentation export, manutention portuaire Shanghai',
+    seaFreight: 185000,
+    seaInsuranceRate: 0.008,
+    seaPortFees: 30000,
+    seaLabel: 'Transport maritime Shanghai → Alger — Fret, assurance, déchargement',
+    customsRate: 0.30,
+    tvaRate: 0.19,
+    dossierFees: 25000,
+    tariffLabel: 'Droits de douane (30%) + TVA (19%) + Frais de dossier — Algérie',
+  },
+};
 
 function formatDA(amount) {
   return amount.toLocaleString('fr-DZ') + ' DA';
@@ -18,11 +44,44 @@ function formatEUR(amount) {
   return Math.round(amount / RATE_CNY_DZD * RATE_CNY_EUR).toLocaleString('fr-FR') + ' \u20AC';
 }
 
+function calcSimTotal(model, toggles) {
+  if (!model) return null;
+  const { baseFobDZD, fobSurcharge, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate, dossierFees } = model;
+
+  let subtotal = baseFobDZD;
+  const lines = [{ label: 'Prix de base (FOB Shanghai)', value: baseFobDZD, always: true }];
+
+  if (toggles.fob) {
+    subtotal += fobSurcharge;
+    lines.push({ label: model.fobSurchargeLabel, value: fobSurcharge, toggle: 'fob' });
+  }
+
+  if (toggles.sea) {
+    const assurance = Math.round(subtotal * seaInsuranceRate);
+    const seaTotal = seaFreight + assurance + seaPortFees;
+    subtotal += seaTotal;
+    lines.push({ label: model.seaLabel, value: seaTotal, toggle: 'sea' });
+  }
+
+  if (toggles.tariff) {
+    // CIF is the subtotal after FOB + sea
+    const cif = subtotal;
+    const customs = Math.round(cif * customsRate);
+    const tva = Math.round((cif + customs) * tvaRate);
+    const tariffTotal = customs + tva + dossierFees;
+    subtotal += tariffTotal;
+    lines.push({ label: model.tariffLabel, value: tariffTotal, toggle: 'tariff' });
+  }
+
+  return { lines, total: subtotal };
+}
+
 export default function Home() {
   const [formState, setFormState] = useState({ name: '', email: '', phone: '', city: '', model: '', budget: '', message: '' });
   const [formStatus, setFormStatus] = useState({ text: '', color: '' });
   const [submitting, setSubmitting] = useState(false);
-  const [simData, setSimData] = useState(null);
+  const [simModelKey, setSimModelKey] = useState('');
+  const [simToggles, setSimToggles] = useState({ fob: false, sea: false, tariff: false });
 
   const navbarRef = useRef(null);
   const fadeRefs = useRef([]);
@@ -69,30 +128,13 @@ export default function Home() {
     setFormState(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSimChange = (e) => {
-    const option = e.target.options[e.target.selectedIndex];
-    if (!option.value) { setSimData(null); return; }
-    const fobCNY = parseInt(option.dataset.fob);
-    const fobDZD = Math.round(fobCNY * RATE_CNY_DZD);
-    const assurance = Math.round((fobDZD + simFret) * simAssuranceRate);
-    const cif = fobDZD + simFret + assurance + simPortFees;
-    const douane = Math.round(cif * simDouaneRate);
-    const tva = Math.round((cif + douane) * simTvaRate);
-    const total = cif + douane + tva + simDossierFees;
+  const handleModelSelect = (e) => {
+    setSimModelKey(e.target.value);
+    setSimToggles({ fob: false, sea: false, tariff: false });
+  };
 
-    setSimData({
-      fob: fobDZD, fret: simFret, assurance, port: simPortFees, cif,
-      douane, tva, dossier: simDossierFees, total,
-      parts: [
-        { label: 'FOB', value: fobDZD, color: '#0F6E56', pct: (fobDZD/total*100).toFixed(1) },
-        { label: 'Fret', value: simFret, color: '#38B2AC', pct: (simFret/total*100).toFixed(1) },
-        { label: 'Assurance', value: assurance, color: '#68D391', pct: (assurance/total*100).toFixed(1) },
-        { label: 'Port', value: simPortFees, color: '#A0AEC0', pct: (simPortFees/total*100).toFixed(1) },
-        { label: 'Douane', value: douane, color: '#ED8936', pct: (douane/total*100).toFixed(1) },
-        { label: 'TVA', value: tva, color: '#E53E3E', pct: (tva/total*100).toFixed(1) },
-        { label: 'Dossier', value: simDossierFees, color: '#9F7AEA', pct: (simDossierFees/total*100).toFixed(1) },
-      ]
-    });
+  const handleToggle = (key) => {
+    setSimToggles(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleSubmit = async (e) => {
@@ -306,41 +348,123 @@ export default function Home() {
       {/* Cost Simulator */}
       <section className="section" id="simulateur">
         <p className="section-label">Calculateur</p>
-        <h2 className="section-title">Simulez le prix total rendu Algérie</h2>
-        <p className="section-subtitle">Devis estimatif incluant le transport maritime, l&apos;assurance, les droits de douane et la TVA.</p>
+        <h2 className="section-title">Calculez votre prix total en quelques clics</h2>
+        <p className="section-subtitle">Sélectionnez un modèle, puis ajoutez les coûts que vous souhaitez inclure. Le total se met à jour automatiquement.</p>
         <div className="simulator" id="simulator">
           <div className="sim-selector">
-            <label htmlFor="carSelect">Sélectionnez votre modèle</label>
-            <select id="carSelect" onChange={handleSimChange} defaultValue="">
-              <option value="">-- Choisir un modèle --</option>
-              <option value="lavida" data-fob="95550" data-name="Volkswagen Lavida 2025">Volkswagen Lavida 2025 — 1 881 000 DA (FOB)</option>
-              <option value="livan" data-fob="60300" data-name="Geely Livan X3 Pro 2026">Geely Livan X3 Pro 2026 — 1 187 000 DA (FOB)</option>
+            <label htmlFor="carSelect">Choisissez votre modèle</label>
+            <select id="carSelect" value={simModelKey} onChange={handleModelSelect}>
+              <option value="">-- Sélectionner un modèle --</option>
+              <option value="lavida">Volkswagen Lavida 2025</option>
+              <option value="livan">Geely Livan X3 Pro 2026</option>
             </select>
           </div>
-          {simData && (
-            <div className="sim-result">
-              <div className="sim-breakdown">
-                <h4>Détail des coûts estimés</h4>
-                <div className="sim-line"><span>Prix FOB Shanghai</span><span>{formatDA(simData.fob)}</span></div>
-                <div className="sim-line"><span>Fret maritime (Shanghai → Alger, conteneur partagé)</span><span>{formatDA(simData.fret)}</span></div>
-                <div className="sim-line"><span>Assurance maritime (0,8% CIF)</span><span>{formatDA(simData.assurance)}</span></div>
-                <div className="sim-line"><span>Manutention portuaire & déchargement</span><span>{formatDA(simData.port)}</span></div>
-                <div className="sim-line sim-subtotal"><span>Valeur CIF (rendu port Alger)</span><span>{formatDA(simData.cif)}</span></div>
-                <div className="sim-line"><span>Droits de douane (30% sur CIF)</span><span>{formatDA(simData.douane)}</span></div>
-                <div className="sim-line"><span>TVA Algérie (19% sur CIF + douane)</span><span>{formatDA(simData.tva)}</span></div>
-                <div className="sim-line"><span>Frais de dossier & dédouanement</span><span>{formatDA(simData.dossier)}</span></div>
-                <div className="sim-line sim-total"><span>Total estimé rendu Alger</span><span>{formatDA(simData.total)} ({formatEUR(simData.total)})</span></div>
+
+          {simModelKey && carModels[simModelKey] && (() => {
+            const model = carModels[simModelKey];
+            const result = calcSimTotal(model, simToggles);
+
+            return (
+              <div className="sim-result">
+                {/* Base price — always visible */}
+                <div className="sim-base-price">
+                  <span className="sim-base-label">Prix de base (FOB Shanghai)</span>
+                  <span className="sim-base-value">{formatDA(model.baseFobDZD)}</span>
+                  <span className="sim-base-eur">{formatEUR(model.baseFobDZD)}</span>
+                </div>
+
+                {/* Toggle layers */}
+                <div className="sim-layers">
+                  <p className="sim-layers-title">Ajoutez les coûts supplémentaires :</p>
+
+                  {/* Layer 1: FOB surcharge */}
+                  <label className={`sim-checkbox ${simToggles.fob ? 'checked' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={simToggles.fob}
+                      onChange={() => handleToggle('fob')}
+                    />
+                    <span className="sim-checkbox-indicator"></span>
+                    <span className="sim-checkbox-body">
+                      <span className="sim-checkbox-title">+ Frais FOB & manutention portuaire</span>
+                      <span className="sim-checkbox-desc">Documentation export, manutention au port de Shanghai, frais de dossier export</span>
+                    </span>
+                    <span className="sim-checkbox-price">+ {formatDA(model.fobSurcharge)}</span>
+                  </label>
+
+                  {/* Layer 2: Sea freight */}
+                  <label className={`sim-checkbox ${simToggles.sea ? 'checked' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={simToggles.sea}
+                      onChange={() => handleToggle('sea')}
+                    />
+                    <span className="sim-checkbox-indicator"></span>
+                    <span className="sim-checkbox-body">
+                      <span className="sim-checkbox-title">+ Transport maritime & assurance</span>
+                      <span className="sim-checkbox-desc">Fret Shanghai → Alger, assurance maritime, déchargement portuaire</span>
+                    </span>
+                    <span className="sim-checkbox-price">
+                      + {formatDA(model.seaFreight + Math.round(model.baseFobDZD * model.seaInsuranceRate) + model.seaPortFees)}
+                    </span>
+                  </label>
+
+                  {/* Layer 3: Local tariffs */}
+                  <label className={`sim-checkbox ${simToggles.tariff ? 'checked' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={simToggles.tariff}
+                      onChange={() => handleToggle('tariff')}
+                    />
+                    <span className="sim-checkbox-indicator"></span>
+                    <span className="sim-checkbox-body">
+                      <span className="sim-checkbox-title">+ Droits de douane & TVA Algérie</span>
+                      <span className="sim-checkbox-desc">Droits de douane (30% CIF), TVA (19%), frais de dédouanement</span>
+                    </span>
+                    <span className="sim-checkbox-price">
+                      + {(() => {
+                        // Calc tariff for preview (assumes sea freight is also active)
+                        const cifForPreview = model.baseFobDZD + (simToggles.fob ? model.fobSurcharge : 0) + (simToggles.sea ? (model.seaFreight + Math.round(model.baseFobDZD * model.seaInsuranceRate) + model.seaPortFees) : 0);
+                        const customsForPreview = Math.round(cifForPreview * model.customsRate);
+                        const tvaForPreview = Math.round((cifForPreview + customsForPreview) * model.tvaRate);
+                        return formatDA(customsForPreview + tvaForPreview + model.dossierFees);
+                      })()}
+                    </span>
+                  </label>
+                </div>
+
+                {/* Result breakdown */}
+                {result && (
+                  <div className="sim-breakdown">
+                    <h4>Détail du calcul</h4>
+                    {result.lines.map((line, i) => (
+                      <div key={i} className={`sim-line ${line.always ? 'sim-line-base' : ''}`}>
+                        <span>{line.label}</span>
+                        <span>{formatDA(line.value)}</span>
+                      </div>
+                    ))}
+                    <div className="sim-line sim-total">
+                      <span>Total estimé</span>
+                      <span>{formatDA(result.total)} ({formatEUR(result.total)})</span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="sim-chart">
+                  {result && result.lines.map((line, i) => {
+                    const colors = ['#0F6E56', '#38B2AC', '#ED8936', '#E53E3E'];
+                    return (
+                      <div key={i} className="sim-chart-bar" style={{ flex: line.value, background: colors[i % colors.length] }} title={`${line.label}: ${formatDA(line.value)}`}></div>
+                    );
+                  })}
+                </div>
+
+                <div className="sim-note">
+                  <p>⚠️ Estimation indicative. Les frais réels peuvent varier selon le volume, la saison et les tarifs douaniers en vigueur. Contactez-nous sur WhatsApp pour un devis personnalisé et précis.</p>
+                </div>
               </div>
-              <div className="sim-chart">
-                {simData.parts.map((p, i) => (
-                  <div key={i} className="sim-chart-bar" style={{ flex: p.value, background: p.color }} title={`${p.label}: ${formatDA(p.value)} (${p.pct}%)`}></div>
-                ))}
-              </div>
-              <div className="sim-note">
-                <p>⚠️ Estimation indicative. Le taux de change CNY/DZD est actualisé quotidiennement. Les frais réels peuvent varier selon le volume, la saison et les tarifs douaniers en vigueur. Contactez-nous sur WhatsApp pour un devis personnalisé.</p>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       </section>
 

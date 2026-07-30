@@ -245,7 +245,7 @@ export default function Home() {
             <div className="car-card fade-in">
               <div className="car-card-image">
                 <span className="car-badge">En stock</span>
-                <img src="/images/volkswagen-lavida-2025.png?v=3" alt="Volkswagen Lavida 2025" />
+                <img src="/images/volkswagen-lavida-2025.png?v=4" alt="Volkswagen Lavida 2025" />
               </div>
               <div className="car-card-body">
                 <span className="brand">Volkswagen</span>

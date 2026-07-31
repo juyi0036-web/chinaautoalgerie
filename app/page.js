@@ -34,11 +34,8 @@ const carModels = {
     customsRate: 0.30,
     tvaRate: 0.19,
   },
-  'livan-manual': {
-    name: 'Geely Livan X3 Pro 2026 — Manuelle',
-    variant: 'Manuelle · Sans toit ouvrant',
-    baseVehicleDZD: 852600,  // 43 300 RMB × 19.69 → 852 577 → 852 600
-    baseVehicleRMB: 43300,
+  livan: {
+    name: 'Geely Livan X3 Pro 2026',
     incoterm: 'FOB Guangdong',
     minOrder: 4,
     minOrderNote: 'Minimum 4 véhicules par conteneur (1ère commande)',
@@ -58,56 +55,12 @@ const carModels = {
     seaPortFees: 30000,
     customsRate: 0.30,
     tvaRate: 0.19,
-  },
-  'livan-manual-sun': {
-    name: 'Geely Livan X3 Pro 2026 — Manuelle + Toit ouvrant',
-    variant: 'Manuelle · Avec toit ouvrant',
-    baseVehicleDZD: 872300,  // 44 300 RMB × 19.69 → 872 267 → 872 300
-    baseVehicleRMB: 44300,
-    incoterm: 'FOB Guangdong',
-    minOrder: 4,
-    minOrderNote: 'Minimum 4 véhicules par conteneur (1ère commande)',
-    fobItems: [
-      { label: 'Transport intérieur jusqu\'au port de Nanhai (Guangdong)', rmb: 1600, dzd: 31500 },
-      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
-      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
-      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
-      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
-      { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
+    variants: [
+      { key: 'manual', label: 'Manuelle · Sans toit ouvrant', baseVehicleRMB: 43300, baseVehicleDZD: 852600 },
+      { key: 'manual-sun', label: 'Manuelle · Avec toit ouvrant', baseVehicleRMB: 44300, baseVehicleDZD: 872300 },
+      { key: 'auto', label: 'Automatique · Avec toit ouvrant', baseVehicleRMB: 48500, baseVehicleDZD: 955000 },
     ],
-    fobServiceFeeDZD: 59100,
-    fobServiceFeeRMB: 3000,
-    fobServiceLabel: 'Service China Auto Algérie (5%)',
-    seaFreight: 185000,
-    seaInsuranceRate: 0.008,
-    seaPortFees: 30000,
-    customsRate: 0.30,
-    tvaRate: 0.19,
-  },
-  'livan-auto': {
-    name: 'Geely Livan X3 Pro 2026 — Automatique + Toit ouvrant',
-    variant: 'Automatique · Avec toit ouvrant',
-    baseVehicleDZD: 955000,  // 48 500 RMB × 19.69 → 954 965 → 955 000
-    baseVehicleRMB: 48500,
-    incoterm: 'FOB Guangdong',
-    minOrder: 4,
-    minOrderNote: 'Minimum 4 véhicules par conteneur (1ère commande)',
-    fobItems: [
-      { label: 'Transport intérieur jusqu\'au port de Nanhai (Guangdong)', rmb: 1600, dzd: 31500 },
-      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
-      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
-      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
-      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
-      { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
-    ],
-    fobServiceFeeDZD: 59100,
-    fobServiceFeeRMB: 3000,
-    fobServiceLabel: 'Service China Auto Algérie (5%)',
-    seaFreight: 185000,
-    seaInsuranceRate: 0.008,
-    seaPortFees: 30000,
-    customsRate: 0.30,
-    tvaRate: 0.19,
+    defaultVariant: 'manual',
   },
 };
 
@@ -121,9 +74,12 @@ function roundDA(v) {
   return Math.round(v / 100) * 100;
 }
 
-function calcSimTotal(model, toggles) {
+function calcSimTotal(model, toggles, variantKey) {
   if (!model) return null;
-  const { baseVehicleDZD, fobItems, fobServiceFeeDZD, fobServiceLabel, incoterm, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate } = model;
+  const variant = model.variants ? model.variants.find(v => v.key === variantKey) : null;
+  const baseVehicleDZD = variant ? variant.baseVehicleDZD : model.baseVehicleDZD;
+  const baseVehicleRMB = variant ? variant.baseVehicleRMB : model.baseVehicleRMB;
+  const { fobItems, fobServiceFeeDZD, fobServiceLabel, incoterm, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate } = model;
 
   let subtotal = baseVehicleDZD;
   const lines = [{ label: 'Prix d\'achat du véhicule (hors FOB)', value: baseVehicleDZD, always: true }];
@@ -163,7 +119,7 @@ function calcSimTotal(model, toggles) {
     );
   }
 
-  return { lines, total: subtotal, fobLines, seaLines, tariffLines };
+  return { lines, total: subtotal, fobLines, seaLines, tariffLines, baseVehicleDZD, baseVehicleRMB };
 }
 
 export default function Home() {
@@ -171,6 +127,7 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState({ text: '', color: '' });
   const [submitting, setSubmitting] = useState(false);
   const [simModelKey, setSimModelKey] = useState('');
+  const [simVariantKey, setSimVariantKey] = useState('');
   const [simToggles, setSimToggles] = useState({ fob: false, sea: false, tariff: false });
 
   const navbarRef = useRef(null);
@@ -219,7 +176,15 @@ export default function Home() {
   };
 
   const handleModelSelect = (e) => {
-    setSimModelKey(e.target.value);
+    const key = e.target.value;
+    setSimModelKey(key);
+    const model = carModels[key];
+    setSimVariantKey(model?.defaultVariant || '');
+    setSimToggles({ fob: false, sea: false, tariff: false });
+  };
+
+  const handleVariantSelect = (key) => {
+    setSimVariantKey(key);
     setSimToggles({ fob: false, sea: false, tariff: false });
   };
 
@@ -409,36 +374,6 @@ export default function Home() {
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
             </div>
-            <div className="car-card fade-in">
-              <div className="car-card-image">
-                <span className="car-badge">SUV</span>
-                <img src="/images/geely-livan-x3-pro.png?v=7" alt="Geely Livan X3 Pro 2026" />
-              </div>
-              <div className="car-card-body">
-                <span className="brand">Geely</span>
-                <h3>Livan X3 Pro 2026</h3>
-                <p className="car-variant">Manuelle · Avec toit ouvrant</p>
-                <div className="car-price"><span className="car-price-from">À partir de</span>872 300 DA</div>
-                <div className="car-price-eur">≈ 44 300 RMB · 5 759 €</div>
-                <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
-                <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
-              </div>
-            </div>
-            <div className="car-card fade-in">
-              <div className="car-card-image">
-                <span className="car-badge">SUV</span>
-                <img src="/images/geely-livan-x3-pro.png?v=7" alt="Geely Livan X3 Pro 2026" />
-              </div>
-              <div className="car-card-body">
-                <span className="brand">Geely</span>
-                <h3>Livan X3 Pro 2026</h3>
-                <p className="car-variant">Automatique · Avec toit ouvrant</p>
-                <div className="car-price"><span className="car-price-from">À partir de</span>955 000 DA</div>
-                <div className="car-price-eur">≈ 48 500 RMB · 6 305 €</div>
-                <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
-                <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -471,23 +406,46 @@ export default function Home() {
             <select id="carSelect" value={simModelKey} onChange={handleModelSelect}>
               <option value="">-- Sélectionner un modèle --</option>
               <option value="lavida">Volkswagen Lavida 2025</option>
-              <option value="livan-manual">Geely Livan X3 Pro 2026 — Manuelle · Sans toit ouvrant</option>
-              <option value="livan-manual-sun">Geely Livan X3 Pro 2026 — Manuelle · Avec toit ouvrant</option>
-              <option value="livan-auto">Geely Livan X3 Pro 2026 — Automatique · Avec toit ouvrant</option>
+              <option value="livan">Geely Livan X3 Pro 2026</option>
             </select>
           </div>
 
           {simModelKey && carModels[simModelKey] && (() => {
             const model = carModels[simModelKey];
-            const result = calcSimTotal(model, simToggles);
+            const result = calcSimTotal(model, simToggles, simVariantKey);
 
             return (
               <div className="sim-result">
+                {/* Variant selector for Livan */}
+                {model.variants && (
+                  <div className="sim-variants">
+                    <p className="sim-variants-title">Choisissez la finition :</p>
+                    <div className="sim-variant-options">
+                      {model.variants.map((v) => (
+                        <label key={v.key} className={`sim-variant-radio ${simVariantKey === v.key ? 'checked' : ''}`}>
+                          <input
+                            type="radio"
+                            name="sim-variant"
+                            value={v.key}
+                            checked={simVariantKey === v.key}
+                            onChange={() => handleVariantSelect(v.key)}
+                          />
+                          <span className="sim-variant-radio-indicator"></span>
+                          <span className="sim-variant-radio-body">
+                            <span className="sim-variant-radio-label">{v.label}</span>
+                            <span className="sim-variant-radio-price">{formatDA(v.baseVehicleDZD)}</span>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Base price — always visible */}
                 <div className="sim-base-price">
                   <span className="sim-base-label">Prix d&apos;achat du véhicule (hors FOB)</span>
-                  <span className="sim-base-value">{formatDA(model.baseVehicleDZD)}</span>
-                  <span className="sim-base-eur">≈ {model.baseVehicleRMB.toLocaleString('fr-FR')} RMB · {formatEUR(model.baseVehicleDZD)}</span>
+                  <span className="sim-base-value">{formatDA(result.baseVehicleDZD)}</span>
+                  <span className="sim-base-eur">≈ {result.baseVehicleRMB.toLocaleString('fr-FR')} RMB · {formatEUR(result.baseVehicleDZD)}</span>
                 </div>
 
                 {/* Toggle layers */}
@@ -708,9 +666,7 @@ export default function Home() {
                 <select id="model" name="model" value={formState.model} onChange={handleChange}>
                   <option value="">Sélectionnez un modèle</option>
                   <option value="Volkswagen Lavida 2025">Volkswagen Lavida 2025</option>
-                  <option value="Geely Livan X3 Pro 2026 — Manuelle · Sans toit ouvrant">Geely Livan X3 Pro 2026 — Manuelle · Sans toit ouvrant</option>
-                  <option value="Geely Livan X3 Pro 2026 — Manuelle · Avec toit ouvrant">Geely Livan X3 Pro 2026 — Manuelle · Avec toit ouvrant</option>
-                  <option value="Geely Livan X3 Pro 2026 — Automatique · Avec toit ouvrant">Geely Livan X3 Pro 2026 — Automatique · Avec toit ouvrant</option>
+                  <option value="Geely Livan X3 Pro 2026">Geely Livan X3 Pro 2026</option>
                   <option value="Autre">Autre (précisez dans le message)</option>
                 </select>
               </div>

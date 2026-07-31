@@ -270,6 +270,37 @@ img { max-width: 100%; height: auto; display: block; }
 .sim-base-value { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
 .sim-base-eur { font-size: 0.95rem; font-weight: 600; color: var(--gray-600); }
 
+/* Variant selector (for models with multiple trims) */
+.sim-variants { margin-bottom: 24px; }
+.sim-variants-title { font-size: 0.9rem; font-weight: 700; color: var(--gray-700); margin-bottom: 12px; }
+.sim-variant-options { display: flex; flex-direction: column; gap: 10px; }
+.sim-variant-radio {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; border: 2px solid var(--gray-200);
+    border-radius: var(--radius-sm); cursor: pointer;
+    transition: all 0.25s ease; background: var(--white);
+    position: relative; user-select: none;
+}
+.sim-variant-radio:hover { border-color: var(--primary); background: var(--primary-light); }
+.sim-variant-radio.checked {
+    border-color: var(--primary); background: var(--primary-light);
+    box-shadow: 0 0 0 1px var(--primary);
+}
+.sim-variant-radio input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+.sim-variant-radio-indicator {
+    width: 22px; height: 22px; min-width: 22px;
+    border: 2px solid var(--gray-300); border-radius: 50%;
+    background: var(--white); transition: all 0.25s ease;
+    display: flex; align-items: center; justify-content: center;
+}
+.sim-variant-radio.checked .sim-variant-radio-indicator { border-color: var(--primary); }
+.sim-variant-radio.checked .sim-variant-radio-indicator::after {
+    content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--primary);
+}
+.sim-variant-radio-body { flex: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-width: 0; }
+.sim-variant-radio-label { font-size: 0.95rem; font-weight: 600; color: var(--gray-800); }
+.sim-variant-radio-price { font-size: 0.95rem; font-weight: 700; color: var(--primary); white-space: nowrap; }
+
 /* Toggle layers */
 .sim-layers {
     display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px;

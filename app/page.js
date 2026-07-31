@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 const RATE_CNY_DZD = 19.69;
+const RATE_CNY_EUR = 0.13;
 
 // ---- Car cost models ----
 // baseVehicleDZD = 车辆裸价（不含 FOB），精确到百位
@@ -62,6 +63,12 @@ const carModels = {
 function formatDA(amount) {
   return amount.toLocaleString('fr-DZ') + ' DA';
 }
+function formatEUR(amount) {
+  return Math.round(amount / RATE_CNY_DZD * RATE_CNY_EUR).toLocaleString('fr-FR') + ' \u20AC';
+}
+function roundDA(v) {
+  return Math.round(v / 100) * 100;
+}
 
 function calcSimTotal(model, toggles) {
   if (!model) return null;
@@ -82,7 +89,7 @@ function calcSimTotal(model, toggles) {
   }
 
   if (toggles.sea) {
-    const assurance = Math.round(subtotal * seaInsuranceRate);
+    const assurance = roundDA(subtotal * seaInsuranceRate);
     const seaTotal = seaFreight + assurance + seaPortFees;
     subtotal += seaTotal;
     lines.push({ label: 'Fret maritime, assurance & port Algérie', value: seaTotal, toggle: 'sea' });
@@ -95,8 +102,8 @@ function calcSimTotal(model, toggles) {
 
   if (toggles.tariff) {
     const cif = subtotal;
-    const customs = Math.round(cif * customsRate);
-    const tva = Math.round((cif + customs) * tvaRate);
+    const customs = roundDA(cif * customsRate);
+    const tva = roundDA((cif + customs) * tvaRate);
     subtotal += customs + tva;
     lines.push({ label: 'Droits de douane & TVA', value: customs + tva, toggle: 'tariff' });
     tariffLines.push(
@@ -279,19 +286,19 @@ export default function Home() {
       <section className="section" style={{ paddingTop: 0 }}>
         <p className="section-label">De la Chine à l&apos;Algérie</p>
         <h2 className="section-title">Une chaîne logistique maîtrisée</h2>
-        <p className="section-subtitle">De l&apos;usine chinoise au port de Shanghai, puis jusqu&apos;à votre porte en Algérie.</p>
+        <p className="section-subtitle">Conteneurisation, transport maritime et livraison — chaque étape est suivie avec rigueur.</p>
         <div className="image-gallery">
           <div className="gallery-item tall">
-            <img src="/images/supply-chain-factory.png" alt="Chaîne de production automobile" />
-            <div className="gallery-caption"><h4>Production en Chine</h4><p>Usines modernes et standards internationaux</p></div>
+            <img src="/images/logistics-container-loading.png" alt="Chargement de conteneurs au port chinois" />
+            <div className="gallery-caption"><h4>Chargement & conteneurisation</h4><p>Vos véhicules sécurisés dans des conteneurs au port d&apos;export</p></div>
           </div>
           <div className="gallery-item">
-            <img src="/images/supply-chain-inspection.png" alt="Contrôle qualité avant expédition" />
-            <div className="gallery-caption"><h4>Inspection rigoureuse</h4><p>Chaque véhicule vérifié avant départ</p></div>
+            <img src="/images/logistics-ocean-freight.png" alt="Transport maritime en conteneur" />
+            <div className="gallery-caption"><h4>Transport maritime</h4><p>Fret sécurisé par voie maritime depuis la Chine</p></div>
           </div>
           <div className="gallery-item">
             <img src="/images/supply-chain-port.png" alt="Port de Shanghai expédition" />
-            <div className="gallery-caption"><h4>Expédition maritime</h4><p>Transport sécurisé depuis Shanghai</p></div>
+            <div className="gallery-caption"><h4>Arrivée au port algérien</h4><p>Dédouanement et livraison jusqu&apos;à votre ville</p></div>
           </div>
         </div>
       </section>
@@ -331,6 +338,7 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
                 <div className="car-price"><span className="car-price-from">À partir de</span>1 575 200 DA</div>
+                <div className="car-price-eur">≈ 80 000 RMB · 10 400 €</div>
                 <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
@@ -350,6 +358,7 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
                 <div className="car-price"><span className="car-price-from">À partir de</span>955 000 DA</div>
+                <div className="car-price-eur">≈ 48 500 RMB · 6 305 €</div>
                 <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
@@ -400,6 +409,7 @@ export default function Home() {
                 <div className="sim-base-price">
                   <span className="sim-base-label">Prix d&apos;achat du véhicule (hors FOB)</span>
                   <span className="sim-base-value">{formatDA(model.baseVehicleDZD)}</span>
+                  <span className="sim-base-eur">≈ {model.baseVehicleRMB.toLocaleString('fr-FR')} RMB · {formatEUR(model.baseVehicleDZD)}</span>
                 </div>
 
                 {/* Toggle layers */}
@@ -494,7 +504,7 @@ export default function Home() {
                     ))}
                     <div className="sim-line sim-total">
                       <span>Total estimé</span>
-                      <span>{formatDA(result.total)}</span>
+                      <span>{formatDA(result.total)} ({formatEUR(result.total)})</span>
                     </div>
                   </div>
                 )}

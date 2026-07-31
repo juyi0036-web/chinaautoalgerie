@@ -310,8 +310,8 @@ export default function Home() {
             <source src="/videos/logistics-ship.mp4" type="video/mp4" />
           </video>
           <div className="video-caption">
-            <h4>Le trajet de votre véhicule</h4>
-            <p>De Shanghai à l&apos;Algérie — expédition maritime sécurisée et suivie</p>
+            <h4>De la Chine jusqu&apos;à vous — le parcours complet</h4>
+            <p>Chargement au port chinois, transport maritime, arrivée au port algérien, dédouanement et livraison clé en main</p>
           </div>
         </div>
       </section>

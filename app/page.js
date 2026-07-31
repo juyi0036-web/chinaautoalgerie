@@ -62,6 +62,31 @@ const carModels = {
     ],
     defaultVariant: 'manual',
   },
+  tcross: {
+    name: 'Volkswagen T-Cross 2025',
+    baseVehicleDZD: 175200,
+    baseVehicleRMB: 8900,
+    incoterm: 'FOB Shanghai',
+    fobItems: [
+      { label: 'Inspection du véhicule (contrôle qualité + rapport)', rmb: 2000, dzd: 39400 },
+      { label: 'Transport intérieur jusqu\'au port de Shanghai', rmb: 1500, dzd: 29500 },
+      { label: 'Préparation véhicule (nettoyage, contrôle, remise en état)', rmb: 500, dzd: 9800 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
+      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
+      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
+      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
+      { label: 'Frais bancaires (virement T/T)', rmb: 200, dzd: 3900 },
+      { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
+    ],
+    fobServiceFeeDZD: 17700,
+    fobServiceFeeRMB: 900,
+    fobServiceLabel: 'Service China Auto Algérie (5%)',
+    seaFreight: 185000,
+    seaInsuranceRate: 0.008,
+    seaPortFees: 30000,
+    customsRate: 0.30,
+    tvaRate: 0.19,
+  },
 };
 
 function formatDA(amount) {
@@ -386,7 +411,7 @@ export default function Home() {
         <div className="section">
           <p className="section-label">Nos modèles disponibles</p>
           <h2 className="section-title">Des véhicules neufs, importés pour vous</h2>
-          <p className="section-subtitle">Tous nos modèles sont neufs, avec devis FOB transparent. D&apos;autres modèles disponibles sur demande.</p>
+          <p className="section-subtitle">Véhicules neufs et d&apos;occasion, importés pour vous avec devis FOB transparent. D&apos;autres modèles disponibles sur demande.</p>
           <div className="car-cards">
             <div className="car-card fade-in">
               <div className="car-card-image">
@@ -423,6 +448,26 @@ export default function Home() {
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
             </div>
+            <div className="car-card fade-in">
+              <div className="car-card-image">
+                <span className="car-badge">Occasion</span>
+                <img src="/images/volkswagen-tcross-2025.png" alt="Volkswagen T-Cross 2025" />
+              </div>
+              <div className="car-card-body">
+                <span className="brand">Volkswagen</span>
+                <h3>T-Cross 2025</h3>
+                <div className="car-specs">
+                  <div className="car-spec-item"><span className="dot"></span>Essence</div>
+                  <div className="car-spec-item"><span className="dot"></span>Automatique</div>
+                  <div className="car-spec-item"><span className="dot"></span>Blanc</div>
+                  <div className="car-spec-item"><span className="dot"></span>50 000 km</div>
+                </div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>175 200 DA</div>
+                <div className="car-price-eur">≈ 8 900 RMB · 1 157 €</div>
+                <div className="car-price-note">Véhicule d&apos;occasion contrôlé. Prix d&apos;achat, hors FOB et transport maritime</div>
+                <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -456,6 +501,7 @@ export default function Home() {
               <option value="">-- Sélectionner un modèle --</option>
               <option value="lavida">Volkswagen Lavida 2025</option>
               <option value="livan">Geely Livan X3 Pro 2026</option>
+              <option value="tcross">Volkswagen T-Cross 2025 (Occasion)</option>
             </select>
           </div>
 
@@ -754,6 +800,7 @@ export default function Home() {
                   <option value="">Sélectionnez un modèle</option>
                   <option value="Volkswagen Lavida 2025">Volkswagen Lavida 2025</option>
                   <option value="Geely Livan X3 Pro 2026">Geely Livan X3 Pro 2026</option>
+                  <option value="Volkswagen T-Cross 2025 (Occasion)">Volkswagen T-Cross 2025 (Occasion)</option>
                   <option value="Autre">Autre (précisez dans le message)</option>
                 </select>
               </div>

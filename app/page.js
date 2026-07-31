@@ -374,13 +374,13 @@ export default function Home() {
         <p className="section-subtitle">Un processus clair et transparent, de la commande à la livraison en Algérie.</p>
         <div className="steps">
           <div className="step fade-in"><h4>Consultation</h4><p>Contactez-nous sur WhatsApp. Choisissez votre modèle et recevez un devis FOB personnalisé sous 24h.</p></div>
-          <div className="step fade-in"><h4>Acompte & Achat</h4><p>Versez 50% d&apos;acompte. Nous achetons et inspectons votre véhicule en Chine.</p></div>
-          <div className="step fade-in"><h4>Expédition</h4><p>Transport maritime depuis Shanghai. Délai total d&apos;environ 45 à 60 jours selon le modèle.</p></div>
-          <div className="step fade-in"><h4>Livraison</h4><p>Paiement du solde avant expédition. Notre équipe locale vous accueille pour la livraison en Algérie.</p></div>
+          <div className="step fade-in"><h4>Commande — 50%</h4><p>Versez 50% d&apos;acompte à la commande. Nous réservons et achetons votre véhicule en Chine.</p></div>
+          <div className="step fade-in"><h4>Paiement complet</h4><p>Règlement du solde (50% restants) avant départ de Chine. Le véhicule est payé intégralement avant expédition.</p></div>
+          <div className="step fade-in"><h4>Expédition & Livraison</h4><p>Transport maritime, dédouanement en Algérie, puis remise des clés par notre équipe locale.</p></div>
         </div>
         <div style={{ textAlign: 'center', marginTop: 40, padding: 24, background: 'var(--primary-light)', borderRadius: 'var(--radius)' }}>
           <p style={{ color: 'var(--primary)', fontWeight: 600, marginBottom: 8 }}>💰 Paiement sécurisé</p>
-          <p style={{ color: 'var(--gray-600)', fontSize: '0.95rem' }}>50% à la commande · 50% avant expédition · Virement bancaire T/T</p>
+          <p style={{ color: 'var(--gray-600)', fontSize: '0.95rem' }}>50% à la commande · 50% avant départ de Chine · Véhicule payé intégralement avant expédition</p>
         </div>
       </section>
 

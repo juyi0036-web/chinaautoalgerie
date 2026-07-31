@@ -6,25 +6,27 @@ const RATE_CNY_DZD = 19.69;
 const RATE_CNY_EUR = 0.13;
 
 // ---- Car cost models ----
-// baseVehicleDZD = 车辆裸价（不含 FOB）
-// fobItems = FOB 上海港之前的明细费用（RMB → DZD）
-// fobServiceRate = 服务费比例（按裸车价 + FOB 费用合计计算）
+// baseVehicleDZD = 车辆裸价（不含 FOB），精确到百位
+// fobItems = FOB 港口之前的明细费用（RMB → DZD，精确到百位）
+// fobServiceFeeDZD = 服务费（devis 固定值，非比例计算）
 const carModels = {
   lavida: {
     name: 'Volkswagen Lavida 2025',
-    baseVehicleDZD: 1575200, // 80 000 RMB × 19.69
+    baseVehicleDZD: 1575200,
     baseVehicleRMB: 80000,
+    incoterm: 'FOB Shanghai',
     fobItems: [
-      { label: 'Inspection du véhicule (contrôle qualité)', rmb: 2000, dzd: 39380 },
-      { label: 'Transport intérieur jusqu\'au port de Shanghai', rmb: 1500, dzd: 29535 },
-      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59070 },
-      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11814 },
-      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49225 },
-      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11814 },
-      { label: 'Frais bancaires (virement T/T)', rmb: 300, dzd: 5907 },
-      { label: 'Divers (imprévus)', rmb: 500, dzd: 9845 },
+      { label: 'Inspection du véhicule (contrôle qualité)', rmb: 2000, dzd: 39400 },
+      { label: 'Transport intérieur jusqu\'au port de Shanghai', rmb: 1500, dzd: 29500 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
+      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
+      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
+      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
+      { label: 'Frais bancaires (virement T/T)', rmb: 300, dzd: 5900 },
+      { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
     ],
-    fobServiceRate: 0.05,
+    fobServiceFeeDZD: 89600,  // 4 550 RMB × 19.69 → 89 600
+    fobServiceFeeRMB: 4550,
     fobServiceLabel: 'Service China Auto Algérie (5%)',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
@@ -34,20 +36,21 @@ const carModels = {
   },
   livan: {
     name: 'Geely Livan X3 Pro 2026',
-    // Données estimées en attendant le devis détaillé
-    baseVehicleDZD: 994000,
-    baseVehicleRMB: 50483,
+    baseVehicleDZD: 955000,
+    baseVehicleRMB: 48500,
+    incoterm: 'FOB Guangdong',
+    minOrder: 4,
+    minOrderNote: 'Minimum 4 véhicules par conteneur (1ère commande)',
     fobItems: [
-      { label: 'Inspection du véhicule (contrôle qualité)', rmb: 1261, dzd: 24850 },
-      { label: 'Transport intérieur jusqu\'au port de Shanghai', rmb: 946, dzd: 18636 },
-      { label: 'Frais d\'agence export (formalités)', rmb: 1892, dzd: 37273 },
-      { label: 'Déclaration en douane (exportation)', rmb: 378, dzd: 7447 },
-      { label: 'Frais portuaires (terminal & manutention)', rmb: 1577, dzd: 31049 },
-      { label: 'Documents export (facture, packing list, BL)', rmb: 378, dzd: 7447 },
-      { label: 'Frais bancaires (virement T/T)', rmb: 189, dzd: 3721 },
-      { label: 'Divers (imprévus)', rmb: 315, dzd: 6203 },
+      { label: 'Transport intérieur jusqu\'au port de Nanhai (Guangdong)', rmb: 1600, dzd: 31500 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
+      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
+      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
+      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
+      { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
     ],
-    fobServiceRate: 0.05,
+    fobServiceFeeDZD: 59100,  // 3 000 RMB × 19.69 → 59 100
+    fobServiceFeeRMB: 3000,
     fobServiceLabel: 'Service China Auto Algérie (5%)',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
@@ -66,7 +69,7 @@ function formatEUR(amount) {
 
 function calcSimTotal(model, toggles) {
   if (!model) return null;
-  const { baseVehicleDZD, fobItems, fobServiceRate, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate } = model;
+  const { baseVehicleDZD, fobItems, fobServiceFeeDZD, fobServiceLabel, incoterm, seaFreight, seaInsuranceRate, seaPortFees, customsRate, tvaRate } = model;
 
   let subtotal = baseVehicleDZD;
   const lines = [{ label: 'Prix d\'achat du véhicule (hors FOB)', value: baseVehicleDZD, always: true }];
@@ -76,11 +79,10 @@ function calcSimTotal(model, toggles) {
 
   if (toggles.fob) {
     const fobTotal = fobItems.reduce((sum, item) => sum + item.dzd, 0);
-    const serviceFee = Math.round((baseVehicleDZD + fobTotal) * fobServiceRate);
-    subtotal += fobTotal + serviceFee;
-    lines.push({ label: 'Coût FOB Shanghai', value: fobTotal + serviceFee, toggle: 'fob' });
+    subtotal += fobTotal + fobServiceFeeDZD;
+    lines.push({ label: 'Coût ' + incoterm, value: fobTotal + fobServiceFeeDZD, toggle: 'fob' });
     fobLines.push(...fobItems.map(item => ({ ...item, type: 'fob' })));
-    fobLines.push({ label: model.fobServiceLabel, dzd: serviceFee, type: 'fob' });
+    fobLines.push({ label: fobServiceLabel, dzd: fobServiceFeeDZD, type: 'fob' });
   }
 
   if (toggles.sea) {
@@ -352,9 +354,9 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>4 véhicules/container</div>
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
-                <div className="car-price"><span className="car-price-from">À partir de</span>994 000 DA</div>
-                <div className="car-price-eur">≈ 50 483 RMB · 6 565 €</div>
-                <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>955 000 DA</div>
+                <div className="car-price-eur">≈ 48 500 RMB · 6 305 €</div>
+                <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
             </div>
@@ -420,7 +422,7 @@ export default function Home() {
                     />
                     <span className="sim-checkbox-indicator"></span>
                     <span className="sim-checkbox-body">
-                      <span className="sim-checkbox-title">+ FOB Shanghai</span>
+                      <span className="sim-checkbox-title">+ {model.incoterm}</span>
                       <span className="sim-checkbox-desc">Inspection, transport intérieur, documents export, frais portuaires et service 5%</span>
                     </span>
                     <span className="sim-checkbox-price">+ {formatDA(result.lines.find(l => l.toggle === 'fob')?.value || 0)}</span>

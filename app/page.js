@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 
 const RATE_CNY_DZD = 19.69;
-const RATE_CNY_EUR = 0.13;
 
 // ---- Car cost models ----
 // baseVehicleDZD = 车辆裸价（不含 FOB），精确到百位
@@ -62,9 +61,6 @@ const carModels = {
 
 function formatDA(amount) {
   return amount.toLocaleString('fr-DZ') + ' DA';
-}
-function formatEUR(amount) {
-  return Math.round(amount / RATE_CNY_DZD * RATE_CNY_EUR).toLocaleString('fr-FR') + ' \u20AC';
 }
 
 function calcSimTotal(model, toggles) {
@@ -335,7 +331,6 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
                 <div className="car-price"><span className="car-price-from">À partir de</span>1 575 200 DA</div>
-                <div className="car-price-eur">≈ 80 000 RMB · 10 400 €</div>
                 <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
@@ -355,7 +350,6 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
                 </div>
                 <div className="car-price"><span className="car-price-from">À partir de</span>955 000 DA</div>
-                <div className="car-price-eur">≈ 48 500 RMB · 6 305 €</div>
                 <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
@@ -406,7 +400,6 @@ export default function Home() {
                 <div className="sim-base-price">
                   <span className="sim-base-label">Prix d&apos;achat du véhicule (hors FOB)</span>
                   <span className="sim-base-value">{formatDA(model.baseVehicleDZD)}</span>
-                  <span className="sim-base-eur">≈ {model.baseVehicleRMB.toLocaleString('fr-FR')} RMB · {formatEUR(model.baseVehicleDZD)}</span>
                 </div>
 
                 {/* Toggle layers */}
@@ -501,7 +494,7 @@ export default function Home() {
                     ))}
                     <div className="sim-line sim-total">
                       <span>Total estimé</span>
-                      <span>{formatDA(result.total)} ({formatEUR(result.total)})</span>
+                      <span>{formatDA(result.total)}</span>
                     </div>
                   </div>
                 )}

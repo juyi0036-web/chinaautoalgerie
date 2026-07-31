@@ -129,6 +129,7 @@ export default function Home() {
   const [simModelKey, setSimModelKey] = useState('');
   const [simVariantKey, setSimVariantKey] = useState('');
   const [simToggles, setSimToggles] = useState({ fob: false, sea: false, tariff: false });
+  const [simLead, setSimLead] = useState({ phone: '', email: '', status: '', submitting: false });
 
   const navbarRef = useRef(null);
   const fadeRefs = useRef([]);
@@ -190,6 +191,54 @@ export default function Home() {
 
   const handleToggle = (key) => {
     setSimToggles(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleSimLeadChange = (e) => {
+    setSimLead(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSimLeadSubmit = async (e) => {
+    e.preventDefault();
+    if (!simLead.phone.trim()) {
+      setSimLead(prev => ({ ...prev, status: 'Veuillez indiquer votre numéro WhatsApp.' }));
+      return;
+    }
+    setSimLead(prev => ({ ...prev, submitting: true, status: '' }));
+
+    const model = carModels[simModelKey];
+    const variant = model?.variants?.find(v => v.key === simVariantKey);
+    const result = model ? calcSimTotal(model, simToggles, simVariantKey) : null;
+    const modelLabel = variant ? `${model.name} — ${variant.label}` : model?.name || '';
+    const included = [
+      simToggles.fob ? 'FOB' : '',
+      simToggles.sea ? 'Fret maritime' : '',
+      simToggles.tariff ? 'Douane & TVA' : '',
+    ].filter(Boolean).join(', ') || 'Prix du véhicule seul';
+
+    const payload = {
+      name: 'Demande depuis calculateur',
+      email: simLead.email,
+      phone: simLead.phone,
+      city: '',
+      model: modelLabel,
+      budget: result ? `Total estimé : ${formatDA(result.total)} (${formatEUR(result.total)})` : '',
+      message: `Demande générée depuis le simulateur de prix.\nModèle : ${modelLabel}\nOptions incluses : ${included}\n${result ? `Total estimé : ${formatDA(result.total)} (${formatEUR(result.total)})` : ''}`,
+    };
+
+    try {
+      const resp = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (resp.ok) {
+        setSimLead({ phone: '', email: '', status: 'Merci, nous vous contacterons rapidement sur WhatsApp.', submitting: false });
+      } else {
+        setSimLead(prev => ({ ...prev, status: 'Échec de l\'envoi. Veuillez réessayer ou nous contacter sur WhatsApp.', submitting: false }));
+      }
+    } catch {
+      setSimLead(prev => ({ ...prev, status: 'Erreur réseau. Veuillez réessayer ou nous contacter sur WhatsApp.', submitting: false }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -556,6 +605,44 @@ export default function Home() {
 
                 <div className="sim-note">
                   <p>⚠️ Estimation indicative. Les frais réels peuvent varier selon le volume, la saison et les tarifs douaniers en vigueur. Contactez-nous sur WhatsApp pour un devis personnalisé et précis.</p>
+                </div>
+
+                {/* Lead capture CTA */}
+                <div className="sim-lead-cta">
+                  <h4>Recevoir ce devis personnalisé</h4>
+                  <p>Laissez vos coordonnées, notre équipe vous recontacte sous 24h — ou écrivez-nous directement sur WhatsApp.</p>
+                  <form onSubmit={handleSimLeadSubmit} className="sim-lead-form">
+                    <div className="sim-lead-fields">
+                      <input
+                        type="tel"
+                        name="phone"
+                        placeholder="WhatsApp / Téléphone *"
+                        value={simLead.phone}
+                        onChange={handleSimLeadChange}
+                        required
+                      />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email (optionnel)"
+                        value={simLead.email}
+                        onChange={handleSimLeadChange}
+                      />
+                    </div>
+                    <div className="sim-lead-actions">
+                      <button type="submit" className="btn btn-primary" disabled={simLead.submitting}>
+                        {simLead.submitting ? 'Envoi en cours...' : '📩 Envoyer ma demande'}
+                      </button>
+                      <a href="https://wa.me/85269724241" className="btn btn-whatsapp">
+                        💬 WhatsApp +852 6972 4241
+                      </a>
+                    </div>
+                    {simLead.status && (
+                      <p className="sim-lead-status" style={{ color: simLead.status.includes('Merci') ? '#059669' : '#dc2626' }}>
+                        {simLead.status}
+                      </p>
+                    )}
+                  </form>
                 </div>
               </div>
             );

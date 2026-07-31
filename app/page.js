@@ -34,10 +34,11 @@ const carModels = {
     customsRate: 0.30,
     tvaRate: 0.19,
   },
-  livan: {
-    name: 'Geely Livan X3 Pro 2026',
-    baseVehicleDZD: 955000,
-    baseVehicleRMB: 48500,
+  'livan-manual': {
+    name: 'Geely Livan X3 Pro 2026 — Manuelle',
+    variant: 'Manuelle · Sans toit ouvrant',
+    baseVehicleDZD: 852600,  // 43 300 RMB × 19.69 → 852 577 → 852 600
+    baseVehicleRMB: 43300,
     incoterm: 'FOB Guangdong',
     minOrder: 4,
     minOrderNote: 'Minimum 4 véhicules par conteneur (1ère commande)',
@@ -50,6 +51,56 @@ const carModels = {
       { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
     ],
     fobServiceFeeDZD: 59100,  // 3 000 RMB × 19.69 → 59 100
+    fobServiceFeeRMB: 3000,
+    fobServiceLabel: 'Service China Auto Algérie (5%)',
+    seaFreight: 185000,
+    seaInsuranceRate: 0.008,
+    seaPortFees: 30000,
+    customsRate: 0.30,
+    tvaRate: 0.19,
+  },
+  'livan-manual-sun': {
+    name: 'Geely Livan X3 Pro 2026 — Manuelle + Toit ouvrant',
+    variant: 'Manuelle · Avec toit ouvrant',
+    baseVehicleDZD: 872300,  // 44 300 RMB × 19.69 → 872 267 → 872 300
+    baseVehicleRMB: 44300,
+    incoterm: 'FOB Guangdong',
+    minOrder: 4,
+    minOrderNote: 'Minimum 4 véhicules par conteneur (1ère commande)',
+    fobItems: [
+      { label: 'Transport intérieur jusqu\'au port de Nanhai (Guangdong)', rmb: 1600, dzd: 31500 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
+      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
+      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
+      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
+      { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
+    ],
+    fobServiceFeeDZD: 59100,
+    fobServiceFeeRMB: 3000,
+    fobServiceLabel: 'Service China Auto Algérie (5%)',
+    seaFreight: 185000,
+    seaInsuranceRate: 0.008,
+    seaPortFees: 30000,
+    customsRate: 0.30,
+    tvaRate: 0.19,
+  },
+  'livan-auto': {
+    name: 'Geely Livan X3 Pro 2026 — Automatique + Toit ouvrant',
+    variant: 'Automatique · Avec toit ouvrant',
+    baseVehicleDZD: 955000,  // 48 500 RMB × 19.69 → 954 965 → 955 000
+    baseVehicleRMB: 48500,
+    incoterm: 'FOB Guangdong',
+    minOrder: 4,
+    minOrderNote: 'Minimum 4 véhicules par conteneur (1ère commande)',
+    fobItems: [
+      { label: 'Transport intérieur jusqu\'au port de Nanhai (Guangdong)', rmb: 1600, dzd: 31500 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
+      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
+      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
+      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
+      { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
+    ],
+    fobServiceFeeDZD: 59100,
     fobServiceFeeRMB: 3000,
     fobServiceLabel: 'Service China Auto Algérie (5%)',
     seaFreight: 185000,
@@ -351,12 +402,37 @@ export default function Home() {
               <div className="car-card-body">
                 <span className="brand">Geely</span>
                 <h3>Livan X3 Pro 2026</h3>
-                <div className="car-specs">
-                  <div className="car-spec-item"><span className="dot"></span>SUV Compact</div>
-                  <div className="car-spec-item"><span className="dot"></span>Économique</div>
-                  <div className="car-spec-item"><span className="dot"></span>4 véhicules/container</div>
-                  <div className="car-spec-item"><span className="dot"></span>Neuf</div>
-                </div>
+                <p className="car-variant">Manuelle · Sans toit ouvrant</p>
+                <div className="car-price"><span className="car-price-from">À partir de</span>852 600 DA</div>
+                <div className="car-price-eur">≈ 43 300 RMB · 5 629 €</div>
+                <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
+                <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
+              </div>
+            </div>
+            <div className="car-card fade-in">
+              <div className="car-card-image">
+                <span className="car-badge">SUV</span>
+                <img src="/images/geely-livan-x3-pro.png?v=7" alt="Geely Livan X3 Pro 2026" />
+              </div>
+              <div className="car-card-body">
+                <span className="brand">Geely</span>
+                <h3>Livan X3 Pro 2026</h3>
+                <p className="car-variant">Manuelle · Avec toit ouvrant</p>
+                <div className="car-price"><span className="car-price-from">À partir de</span>872 300 DA</div>
+                <div className="car-price-eur">≈ 44 300 RMB · 5 759 €</div>
+                <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
+                <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
+              </div>
+            </div>
+            <div className="car-card fade-in">
+              <div className="car-card-image">
+                <span className="car-badge">SUV</span>
+                <img src="/images/geely-livan-x3-pro.png?v=7" alt="Geely Livan X3 Pro 2026" />
+              </div>
+              <div className="car-card-body">
+                <span className="brand">Geely</span>
+                <h3>Livan X3 Pro 2026</h3>
+                <p className="car-variant">Automatique · Avec toit ouvrant</p>
                 <div className="car-price"><span className="car-price-from">À partir de</span>955 000 DA</div>
                 <div className="car-price-eur">≈ 48 500 RMB · 6 305 €</div>
                 <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
@@ -395,7 +471,9 @@ export default function Home() {
             <select id="carSelect" value={simModelKey} onChange={handleModelSelect}>
               <option value="">-- Sélectionner un modèle --</option>
               <option value="lavida">Volkswagen Lavida 2025</option>
-              <option value="livan">Geely Livan X3 Pro 2026</option>
+              <option value="livan-manual">Geely Livan X3 Pro 2026 — Manuelle · Sans toit ouvrant</option>
+              <option value="livan-manual-sun">Geely Livan X3 Pro 2026 — Manuelle · Avec toit ouvrant</option>
+              <option value="livan-auto">Geely Livan X3 Pro 2026 — Automatique · Avec toit ouvrant</option>
             </select>
           </div>
 
@@ -630,7 +708,9 @@ export default function Home() {
                 <select id="model" name="model" value={formState.model} onChange={handleChange}>
                   <option value="">Sélectionnez un modèle</option>
                   <option value="Volkswagen Lavida 2025">Volkswagen Lavida 2025</option>
-                  <option value="Geely Livan X3 Pro 2026">Geely Livan X3 Pro 2026</option>
+                  <option value="Geely Livan X3 Pro 2026 — Manuelle · Sans toit ouvrant">Geely Livan X3 Pro 2026 — Manuelle · Sans toit ouvrant</option>
+                  <option value="Geely Livan X3 Pro 2026 — Manuelle · Avec toit ouvrant">Geely Livan X3 Pro 2026 — Manuelle · Avec toit ouvrant</option>
+                  <option value="Geely Livan X3 Pro 2026 — Automatique · Avec toit ouvrant">Geely Livan X3 Pro 2026 — Automatique · Avec toit ouvrant</option>
                   <option value="Autre">Autre (précisez dans le message)</option>
                 </select>
               </div>

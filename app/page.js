@@ -63,7 +63,7 @@ const carModels = {
     defaultVariant: 'manual',
   },
   tcross: {
-    name: 'Volkswagen T-Cross 2025',
+    name: 'Volkswagen T-Cross 2023',
     baseVehicleDZD: 175200,
     baseVehicleRMB: 8900,
     incoterm: 'FOB Shanghai',
@@ -451,11 +451,11 @@ export default function Home() {
             <div className="car-card fade-in">
               <div className="car-card-image">
                 <span className="car-badge">Occasion</span>
-                <img src="/images/volkswagen-tcross-2025.png" alt="Volkswagen T-Cross 2025" />
+                <img src="/images/volkswagen-tcross-2025.png" alt="Volkswagen T-Cross 2023" />
               </div>
               <div className="car-card-body">
                 <span className="brand">Volkswagen</span>
-                <h3>T-Cross 2025</h3>
+                <h3>T-Cross 2023</h3>
                 <div className="car-specs">
                   <div className="car-spec-item"><span className="dot"></span>Essence</div>
                   <div className="car-spec-item"><span className="dot"></span>Automatique</div>
@@ -501,7 +501,7 @@ export default function Home() {
               <option value="">-- Sélectionner un modèle --</option>
               <option value="lavida">Volkswagen Lavida 2025</option>
               <option value="livan">Geely Livan X3 Pro 2026</option>
-              <option value="tcross">Volkswagen T-Cross 2025 (Occasion)</option>
+              <option value="tcross">Volkswagen T-Cross 2023 (Occasion)</option>
             </select>
           </div>
 
@@ -800,7 +800,7 @@ export default function Home() {
                   <option value="">Sélectionnez un modèle</option>
                   <option value="Volkswagen Lavida 2025">Volkswagen Lavida 2025</option>
                   <option value="Geely Livan X3 Pro 2026">Geely Livan X3 Pro 2026</option>
-                  <option value="Volkswagen T-Cross 2025 (Occasion)">Volkswagen T-Cross 2025 (Occasion)</option>
+                  <option value="Volkswagen T-Cross 2023 (Occasion)">Volkswagen T-Cross 2023 (Occasion)</option>
                   <option value="Autre">Autre (précisez dans le message)</option>
                 </select>
               </div>

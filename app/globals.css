@@ -176,6 +176,10 @@ img { max-width: 100%; height: auto; display: block; }
 .car-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
 .car-spec-item { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; color: var(--gray-600); }
 .car-spec-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+.car-colors { display: flex; flex-wrap: wrap; gap: 14px; margin: 4px 0 18px; }
+.car-color { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--gray-600); }
+.car-color .swatch { width: 16px; height: 16px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 1px rgba(0,0,0,0.12); }
+.car-color-label { font-size: 0.72rem; color: var(--gray-500); margin-right: 2px; }
 .car-price { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 2px; }
 .car-price-from { display: block; font-size: 0.75rem; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
 .car-price-eur { font-size: 1rem; font-weight: 600; color: var(--gray-600); margin-bottom: 2px; }

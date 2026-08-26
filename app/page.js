@@ -448,8 +448,14 @@ export default function Home() {
                 <div className="car-specs">
                   <div className="car-spec-item"><span className="dot"></span>1.5L Essence</div>
                   <div className="car-spec-item"><span className="dot"></span>Automatique</div>
-                  <div className="car-spec-item"><span className="dot"></span>Blanc</div>
                   <div className="car-spec-item"><span className="dot"></span>Neuf</div>
+                </div>
+                <div className="car-colors">
+                  <span className="car-color-label">Couleurs :</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#1a1a1a' }}></span>Noir</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#8a8d91' }}></span>Gris</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#f2f2f2', boxShadow: '0 0 0 1px rgba(0,0,0,0.2)' }}></span>Blanc</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#c5c9cc' }}></span>Argent</span>
                 </div>
                 <div className="car-price"><span className="car-price-from">À partir de</span>1 575 200 DA</div>
                 <div className="car-price-eur">≈ 80 000 RMB · 10 400 €</div>
@@ -466,6 +472,13 @@ export default function Home() {
                 <span className="brand">Geely</span>
                 <h3>Livan X3 Pro 2026</h3>
                 <p className="car-variant">Manuelle · Sans toit ouvrant</p>
+                <div className="car-colors">
+                  <span className="car-color-label">Couleurs :</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#1a1a1a' }}></span>Noir</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#8a8d91' }}></span>Gris</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#f2f2f2', boxShadow: '0 0 0 1px rgba(0,0,0,0.2)' }}></span>Blanc</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#c5c9cc' }}></span>Argent</span>
+                </div>
                 <div className="car-price"><span className="car-price-from">À partir de</span>852 600 DA</div>
                 <div className="car-price-eur">≈ 43 300 RMB · 5 629 €</div>
                 <div className="car-price-note">Prix d&apos;achat du véhicule, hors FOB et transport maritime. Min. 4 véhicules/conteneur</div>
@@ -483,8 +496,13 @@ export default function Home() {
                 <div className="car-specs">
                   <div className="car-spec-item"><span className="dot"></span>Essence</div>
                   <div className="car-spec-item"><span className="dot"></span>Automatique</div>
-                  <div className="car-spec-item"><span className="dot"></span>Blanc</div>
                   <div className="car-spec-item"><span className="dot"></span>50 000 km</div>
+                </div>
+                <div className="car-colors">
+                  <span className="car-color-label">Couleurs :</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#1a1a1a' }}></span>Noir</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#8a8d91' }}></span>Gris</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#f2f2f2', boxShadow: '0 0 0 1px rgba(0,0,0,0.2)' }}></span>Blanc</span>
                 </div>
                 <div className="car-price"><span className="car-price-from">À partir de</span>175 200 DA</div>
                 <div className="car-price-eur">≈ 8 900 RMB · 1 157 €</div>
@@ -505,6 +523,13 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Vitres teintées d&apos;origine</div>
                   <div className="car-spec-item"><span className="dot"></span>Garantie 4 ans / 100 000 km</div>
                   <div className="car-spec-item"><span className="dot"></span>Multimédia FR · AR · EN</div>
+                </div>
+                <div className="car-colors">
+                  <span className="car-color-label">Couleurs :</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#1a1a1a' }}></span>Noir</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#8a8d91' }}></span>Gris</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#f2f2f2', boxShadow: '0 0 0 1px rgba(0,0,0,0.2)' }}></span>Blanc</span>
+                  <span className="car-color"><span className="swatch" style={{ background: '#b01116' }}></span>Rouge</span>
                 </div>
                 <div className="car-price"><span className="car-price-from">À partir de</span>1 063 300 DA</div>
                 <div className="car-price-eur">≈ 54 000 RMB · 7 020 €</div>

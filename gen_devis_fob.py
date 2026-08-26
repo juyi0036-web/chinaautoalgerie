@@ -101,7 +101,7 @@ MODELS = {
             ("Quantité", "1 unité"),
         ],
         "items": [
-            ("Prix d'achat du véhicule", "Véhicule d'occasion contrôlé", 8900),
+            ("Prix d'achat du véhicule", "Véhicule d'occasion contrôlé", 55789),
             ("Inspection du véhicule", "Contrôle qualité + rapport", 2000),
             ("Transport intérieur", "Jusqu'au port de Shanghai", 1500),
             ("Préparation véhicule", "Nettoyage, contrôle, remise en état", 500),
@@ -112,7 +112,7 @@ MODELS = {
             ("Frais bancaires", "Virement bancaire (T/T)", 200),
             ("Divers", "Imprévus", 500),
         ],
-        "service": 900,
+        "service": 3359,
         "container_note": None,
     },
     "coolray": {

@@ -64,8 +64,8 @@ const carModels = {
   },
   tcross: {
     name: 'Volkswagen T-Cross 2023',
-    baseVehicleDZD: 175200,
-    baseVehicleRMB: 8900,
+    baseVehicleDZD: 1098500,
+    baseVehicleRMB: 55789,
     incoterm: 'FOB Shanghai',
     fobItems: [
       { label: 'Inspection du véhicule (contrôle qualité + rapport)', rmb: 2000, dzd: 39400 },
@@ -78,8 +78,8 @@ const carModels = {
       { label: 'Frais bancaires (virement T/T)', rmb: 200, dzd: 3900 },
       { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
     ],
-    fobServiceFeeDZD: 17700,
-    fobServiceFeeRMB: 900,
+    fobServiceFeeDZD: 66200,
+    fobServiceFeeRMB: 3359,
     fobServiceLabel: 'Service China Auto Algérie (5%)',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
@@ -504,8 +504,8 @@ export default function Home() {
                   <span className="car-color"><span className="swatch" style={{ background: '#8a8d91' }}></span>Gris</span>
                   <span className="car-color"><span className="swatch" style={{ background: '#f2f2f2', boxShadow: '0 0 0 1px rgba(0,0,0,0.2)' }}></span>Blanc</span>
                 </div>
-                <div className="car-price"><span className="car-price-from">À partir de</span>175 200 DA</div>
-                <div className="car-price-eur">≈ 8 900 RMB · 1 157 €</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>1 098 500 DA</div>
+                <div className="car-price-eur">≈ 55 789 RMB · 7 253 €</div>
                 <div className="car-price-note">Véhicule d&apos;occasion contrôlé. Prix d&apos;achat, hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>

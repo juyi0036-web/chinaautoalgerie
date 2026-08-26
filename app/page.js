@@ -89,8 +89,8 @@ const carModels = {
   },
   coolray: {
     name: 'Geely Coolray 668',
-    baseVehicleDZD: 1220800,
-    baseVehicleRMB: 62000,
+    baseVehicleDZD: 949100,
+    baseVehicleRMB: 48200,
     incoterm: 'FOB Nansha',
     fobItems: [
       { label: 'Inspection du véhicule (contrôle qualité)', rmb: 1500, dzd: 29500 },
@@ -458,7 +458,7 @@ export default function Home() {
             </div>
             <div className="car-card fade-in">
               <div className="car-card-image">
-                <span className="car-badge">SUV</span>
+                <span className="car-badge">Nouveau · SUV</span>
                 <img src="/images/geely-livan-x3-pro.png?v=7" alt="Geely Livan X3 Pro 2026" />
               </div>
               <div className="car-card-body">
@@ -505,8 +505,8 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Garantie 4 ans / 100 000 km</div>
                   <div className="car-spec-item"><span className="dot"></span>Multimédia FR · AR · EN</div>
                 </div>
-                <div className="car-price"><span className="car-price-from">À partir de</span>1 220 800 DA</div>
-                <div className="car-price-eur">≈ 62 000 RMB · 8 060 €</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>949 100 DA</div>
+                <div className="car-price-eur">≈ 48 200 RMB · 6 266 €</div>
                 <div className="car-price-note">Version internationale Afrique. Réseau après-vente Geely agréé en Algérie. Prix hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>

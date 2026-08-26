@@ -89,8 +89,8 @@ const carModels = {
   },
   coolray: {
     name: 'Geely Coolray 668',
-    baseVehicleDZD: 955000,
-    baseVehicleRMB: 48500,
+    baseVehicleDZD: 1063300,
+    baseVehicleRMB: 54000,
     incoterm: 'FOB Nansha',
     fobItems: [
       { label: 'Inspection du véhicule (contrôle qualité)', rmb: 0, dzd: 0 },
@@ -102,8 +102,8 @@ const carModels = {
       { label: 'Frais bancaires (virement T/T)', rmb: 0, dzd: 0 },
       { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
     ],
-    fobServiceFeeDZD: 53400,
-    fobServiceFeeRMB: 2710,
+    fobServiceFeeDZD: 58700,
+    fobServiceFeeRMB: 2985,
     fobServiceLabel: 'Service China Auto Algérie (5%)',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
@@ -506,8 +506,8 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Garantie 4 ans / 100 000 km</div>
                   <div className="car-spec-item"><span className="dot"></span>Multimédia FR · AR · EN</div>
                 </div>
-                <div className="car-price"><span className="car-price-from">À partir de</span>955 000 DA</div>
-                <div className="car-price-eur">≈ 48 500 RMB · 6 302 €</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>1 063 300 DA</div>
+                <div className="car-price-eur">≈ 54 000 RMB · 7 020 €</div>
                 <div className="car-price-note">Version internationale Afrique. Réseau après-vente Geely agréé en Algérie. Prix hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>

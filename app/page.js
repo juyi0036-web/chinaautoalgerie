@@ -89,20 +89,21 @@ const carModels = {
   },
   coolray: {
     name: 'Geely Coolray 668',
-    baseVehicleDZD: 949100,
-    baseVehicleRMB: 48200,
+    baseVehicleDZD: 955000,
+    baseVehicleRMB: 48500,
     incoterm: 'FOB Nansha',
     fobItems: [
-      { label: 'Inspection du véhicule (contrôle qualité)', rmb: 1500, dzd: 29500 },
-      { label: 'Transport intérieur jusqu\'au port de Nansha (Guangdong)', rmb: 1600, dzd: 31500 },
-      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
+      { label: 'Inspection du véhicule (contrôle qualité)', rmb: 0, dzd: 0 },
+      { label: 'Transport intérieur jusqu\'au port de Nansha (Guangdong)', rmb: 0, dzd: 0 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 1500, dzd: 29500 },
       { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
       { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
       { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
+      { label: 'Frais bancaires (virement T/T)', rmb: 0, dzd: 0 },
       { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
     ],
-    fobServiceFeeDZD: 59100,
-    fobServiceFeeRMB: 3000,
+    fobServiceFeeDZD: 53400,
+    fobServiceFeeRMB: 2710,
     fobServiceLabel: 'Service China Auto Algérie (5%)',
     seaFreight: 185000,
     seaInsuranceRate: 0.008,
@@ -505,8 +506,8 @@ export default function Home() {
                   <div className="car-spec-item"><span className="dot"></span>Garantie 4 ans / 100 000 km</div>
                   <div className="car-spec-item"><span className="dot"></span>Multimédia FR · AR · EN</div>
                 </div>
-                <div className="car-price"><span className="car-price-from">À partir de</span>949 100 DA</div>
-                <div className="car-price-eur">≈ 48 200 RMB · 6 266 €</div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>955 000 DA</div>
+                <div className="car-price-eur">≈ 48 500 RMB · 6 302 €</div>
                 <div className="car-price-note">Version internationale Afrique. Réseau après-vente Geely agréé en Algérie. Prix hors FOB et transport maritime</div>
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>

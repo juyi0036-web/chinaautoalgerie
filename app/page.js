@@ -87,6 +87,29 @@ const carModels = {
     customsRate: 0.30,
     tvaRate: 0.19,
   },
+  coolray: {
+    name: 'Geely Coolray 668',
+    baseVehicleDZD: 1220800,
+    baseVehicleRMB: 62000,
+    incoterm: 'FOB Nansha',
+    fobItems: [
+      { label: 'Inspection du véhicule (contrôle qualité)', rmb: 1500, dzd: 29500 },
+      { label: 'Transport intérieur jusqu\'au port de Nansha (Guangdong)', rmb: 1600, dzd: 31500 },
+      { label: 'Frais d\'agence export (formalités)', rmb: 3000, dzd: 59100 },
+      { label: 'Déclaration en douane (exportation)', rmb: 600, dzd: 11800 },
+      { label: 'Frais portuaires (terminal & manutention)', rmb: 2500, dzd: 49200 },
+      { label: 'Documents export (facture, packing list, BL)', rmb: 600, dzd: 11800 },
+      { label: 'Divers (imprévus)', rmb: 500, dzd: 9800 },
+    ],
+    fobServiceFeeDZD: 59100,
+    fobServiceFeeRMB: 3000,
+    fobServiceLabel: 'Service China Auto Algérie (5%)',
+    seaFreight: 185000,
+    seaInsuranceRate: 0.008,
+    seaPortFees: 30000,
+    customsRate: 0.30,
+    tvaRate: 0.19,
+  },
 };
 
 function formatDA(amount) {
@@ -468,6 +491,26 @@ export default function Home() {
                 <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
               </div>
             </div>
+            <div className="car-card fade-in">
+              <div className="car-card-image">
+                <span className="car-badge">Nouveau · SUV</span>
+                <img src="/images/geely-coolray-668.png" alt="Geely Coolray 668" />
+              </div>
+              <div className="car-card-body">
+                <span className="brand">Geely</span>
+                <h3>Coolray 668</h3>
+                <div className="car-specs">
+                  <div className="car-spec-item"><span className="dot"></span>Toit ouvrant panoramique</div>
+                  <div className="car-spec-item"><span className="dot"></span>Vitres teintées d&apos;origine</div>
+                  <div className="car-spec-item"><span className="dot"></span>Garantie 4 ans / 100 000 km</div>
+                  <div className="car-spec-item"><span className="dot"></span>Multimédia FR · AR · EN</div>
+                </div>
+                <div className="car-price"><span className="car-price-from">À partir de</span>1 220 800 DA</div>
+                <div className="car-price-eur">≈ 62 000 RMB · 8 060 €</div>
+                <div className="car-price-note">Version internationale Afrique. Réseau après-vente Geely agréé en Algérie. Prix hors FOB et transport maritime</div>
+                <a href="#contact" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Demander un devis détaillé</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -502,6 +545,7 @@ export default function Home() {
               <option value="lavida">Volkswagen Lavida 2025</option>
               <option value="livan">Geely Livan X3 Pro 2026</option>
               <option value="tcross">Volkswagen T-Cross 2023 (Occasion)</option>
+              <option value="coolray">Geely Coolray 668</option>
             </select>
           </div>
 
@@ -801,6 +845,7 @@ export default function Home() {
                   <option value="Volkswagen Lavida 2025">Volkswagen Lavida 2025</option>
                   <option value="Geely Livan X3 Pro 2026">Geely Livan X3 Pro 2026</option>
                   <option value="Volkswagen T-Cross 2023 (Occasion)">Volkswagen T-Cross 2023 (Occasion)</option>
+                  <option value="Geely Coolray 668">Geely Coolray 668</option>
                   <option value="Autre">Autre (précisez dans le message)</option>
                 </select>
               </div>
